@@ -6,45 +6,64 @@ interface PayButtonProps {
     isGooglePayReady: boolean;
     setupGooglePay: () => void;
     setupApplePay: () => void;
+    disabled?: boolean;
+    disabledMessage?: string;
 }
 
 const PayButton: React.FC<PayButtonProps> = (props) => {
-    const { paymentType, isApplePayReady, isGooglePayReady, setupGooglePay, setupApplePay } = props;
+    const { paymentType, isApplePayReady, isGooglePayReady, setupGooglePay, setupApplePay, disabled = false, disabledMessage = "" } = props;
 
     return (
         <>
             {paymentType === "credit-card" && (
-                <Button
-                    type="submit"
-                    variant="contained"
-                    className="continue-button glass-button glass-button-accent width100">
-                    <span className="text-en">CONTINUE</span>
-                    <span className="text-zh"> 下一步</span>
-                </Button>
+                <>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disabled={disabled}
+                        className="continue-button glass-button glass-button-accent width100">
+                        <span className="text-en">CONTINUE</span>
+                        <span className="text-zh"> 下一步</span>
+                    </Button>
+                    {disabledMessage && (
+                        <p className="payment-disabled-message text-zh">{disabledMessage}</p>
+                    )}
+                </>
             )}
             {paymentType === "apple-pay" && (
                 <>
-                    {isApplePayReady ? (
+                    {!disabled && isApplePayReady ? (
                         <div id="apple-pay-button-container" onClick={setupApplePay}></div>
                     ) : (
-                        <button type="submit" className="fake-pay-button apple-pay-button"></button>
+                        <>
+                            <button type="button" disabled className="fake-pay-button apple-pay-button"></button>
+                            {disabledMessage && (
+                                <p className="payment-disabled-message text-zh">{disabledMessage}</p>
+                            )}
+                        </>
                     )}
                 </>
 
             )}
             {paymentType === "google-pay" && (
                 <>
-                    {isGooglePayReady ? (
+                    {!disabled && isGooglePayReady ? (
                         <button
                             type="button"
                             className="fake-pay-button google-pay-button"
                             onClick={setupGooglePay}
                         ></button>
                     ) : (
-                        <button
-                            type="submit"
-                            className="fake-pay-button google-pay-button"
-                        ></button>
+                        <>
+                            <button
+                                type="button"
+                                disabled
+                                className="fake-pay-button google-pay-button"
+                            ></button>
+                            {disabledMessage && (
+                                <p className="payment-disabled-message text-zh">{disabledMessage}</p>
+                            )}
+                        </>
                     )}
                 </>
             )}

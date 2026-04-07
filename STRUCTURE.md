@@ -50,10 +50,12 @@ VITE_TAPPAY_APP_KEY=       # secret API key paired with the ID
 VITE_APPLE_MERCHANT_ID=    # Apple Pay merchant identifier (e.g., merchant.com.example)
 VITE_GOOGLE_MERCHANT_ID=   # Google Pay merchant ID
 VITE_ENABLE_GOOGLE_PAY=    # 'true' (default) to show Google Pay, set to 'false' to hide it
+VITE_APP_ENV=              # 'production' enables giving lock; 'staging' bypasses it
 VITE_TAPPAY_ENV=           # 'production' (default) or 'sandbox' for TPDirect.setupSDK
 VITE_PAYMENT_API_URL=      # backend payment endpoint (defaults to https://confgive.thehope.app/api/payment)
+VITE_GIVING_START_AT=      # optional open time, e.g. 2026-04-20T12:00:00+08:00
 ```
-These are consumed in `src/pages/Confgive.tsx` during TapPay setup. Missing values will log an error and payment widgets will not initialize.
+These are consumed in `src/pages/Confgive.tsx` during TapPay setup. Missing values will log an error and payment widgets will not initialize. When `VITE_APP_ENV=production`, the form checks `VITE_GIVING_START_AT`; if the current time is earlier than that timestamp, payment stays locked and the CTA shows `奉獻將於 MM/DD 開放`. When `VITE_APP_ENV=staging`, the lock is bypassed.
 
 ## Local Startup Cheat Sheet
 1. **Prereqs**: Node 18.18+ (Vite 6 requirement) and pnpm 9 (run `corepack enable` once to use the bundled pnpm).

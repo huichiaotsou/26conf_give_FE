@@ -16,10 +16,12 @@ VITE_TAPPAY_APP_KEY=           # TapPay App Key (keep secret)
 VITE_APPLE_MERCHANT_ID=        # Apple Pay merchant identifier
 VITE_GOOGLE_MERCHANT_ID=       # Google Pay merchant ID
 VITE_ENABLE_GOOGLE_PAY=        # 'true' (default) to show Google Pay; set 'false' to hide it
+VITE_APP_ENV=                  # 'production' enables giving lock; 'staging' bypasses it
 VITE_TAPPAY_ENV=               # 'production' (default) or 'sandbox' to pick TapPay mode
 VITE_PAYMENT_API_URL=          # backend payment API (defaults to https://confgive.thehope.app/api/payment)
+VITE_GIVING_START_AT=          # optional open time, e.g. 2026-04-20T12:00:00+08:00
 ```
-These are read in `src/pages/Confgive.tsx` during `TPDirect.setupSDK`; missing values will keep Pay integrations from initializing.
+These are read in `src/pages/Confgive.tsx` during `TPDirect.setupSDK`; missing values will keep Pay integrations from initializing. When `VITE_APP_ENV=production`, the UI checks `VITE_GIVING_START_AT`; if the current time is earlier than that timestamp, the payment action stays disabled and shows `奉獻將於 MM/DD 開放`. When `VITE_APP_ENV=staging`, this lock is bypassed.
 
 ## Install & run
 ```bash

@@ -31,6 +31,21 @@ const RECEIPT_TYPES = {
     COMPANY: "company",
 };
 
+const parseGivingStartAt = (value: string | undefined) => {
+    if (!value) return null;
+
+    const normalizedValue = value.trim();
+    if (!normalizedValue) return null;
+
+    const parsedDate = new Date(normalizedValue);
+    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+};
+
+const formatMonthDay = (date: Date) => {
+    const month = `${date.getMonth() + 1}`.padStart(2, "0");
+    const day = `${date.getDate()}`.padStart(2, "0");
+    return `${month}/${day}`;
+};
 
 const CONFGive = () => {
     const { register, handleSubmit, getValues, watch, setValue, clearErrors, formState: { errors, isValid } } = useForm<ConfGiveProps>(
@@ -68,6 +83,11 @@ const CONFGive = () => {
     const googleMerchantIdRef = useRef<string>(import.meta.env.VITE_GOOGLE_MERCHANT_ID || '');
     const googlePayFeatureEnabled = `${import.meta.env.VITE_ENABLE_GOOGLE_PAY ?? 'true'}`.toLowerCase() !== 'false';
     const isGooglePayAvailable = Boolean(googleMerchantIdRef.current) && googlePayFeatureEnabled;
+    const appEnv = `${import.meta.env.VITE_APP_ENV ?? 'production'}`.toLowerCase();
+    const isProductionEnvironment = appEnv === 'production';
+    const givingStartAt = parseGivingStartAt(import.meta.env.VITE_GIVING_START_AT);
+    const isGivingOpen = !isProductionEnvironment || !givingStartAt || new Date() >= givingStartAt;
+    const givingOpenMessage = givingStartAt ? `奉獻將於 ${formatMonthDay(givingStartAt)} 開放` : '';
 
     const handleFocus = () => {
         setIsFocused(true);
@@ -198,6 +218,11 @@ const CONFGive = () => {
 
     // **提交**
     const onSubmit: SubmitHandler<ConfGiveProps> = (data) => {
+        if (!isGivingOpen) {
+            handleOpenAlert(givingOpenMessage, `Donation will open on ${formatMonthDay(givingStartAt!)}`);
+            return;
+        }
+
         if (data.paymentType === "credit-card") {
             setupCreditCard();
         };
@@ -206,6 +231,11 @@ const CONFGive = () => {
 
     // **設置 Apple Pay**
     const setupApplePay = async () => {
+        if (!isGivingOpen) {
+            setIsApplePayReady(false);
+            handleOpenAlert(givingOpenMessage, `Donation will open on ${formatMonthDay(givingStartAt!)}`);
+            return;
+        }
 
         if (!appleMerchantIdRef.current) {
             setIsApplePayReady(false);
@@ -255,6 +285,12 @@ const CONFGive = () => {
 
 
     const setupGooglePay = () => {
+        if (!isGivingOpen) {
+            setIsGooglePayReady(false);
+            handleOpenAlert(givingOpenMessage, `Donation will open on ${formatMonthDay(givingStartAt!)}`);
+            return;
+        }
+
         if (!googlePayFeatureEnabled || !googleMerchantIdRef.current) {
             setIsGooglePayReady(false);
             handleOpenAlert("Google Pay 暫時無法使用，請改用其他付款方式", "Google Pay is temporarily unavailable. Please choose another payment method.");
@@ -673,7 +709,9 @@ const CONFGive = () => {
                                         setupGooglePay={setupGooglePay}
                                         setupApplePay={setupApplePay}
                                         isApplePayReady={isApplePayReady}
-                                        isGooglePayReady={isGooglePayReady}></PayButton>
+                                        isGooglePayReady={isGooglePayReady}
+                                        disabled={!isGivingOpen}
+                                        disabledMessage={!isGivingOpen ? givingOpenMessage : ''}></PayButton>
                                 </Box>
                             </Box>
                         </Box>

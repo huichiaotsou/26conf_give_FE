@@ -13,8 +13,10 @@ export default defineConfig({
         VITE_APPLE_MERCHANT_ID: '',
         VITE_GOOGLE_MERCHANT_ID: '',
         VITE_ENABLE_GOOGLE_PAY: 'true',
+        VITE_APP_ENV: 'production',
         VITE_TAPPAY_ENV: 'production',
         VITE_PAYMENT_API_URL: 'https://confgive.thehope.app/api/payment',
+        VITE_GIVING_START_AT: '',
       },
       { defineOn: 'import.meta.env' }
     ),
