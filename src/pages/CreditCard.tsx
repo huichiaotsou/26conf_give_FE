@@ -38,7 +38,7 @@ const CreditCard: React.FC<CreditCardProps> = (props) => {
                 styles: {
                     'input': {
                         'font-size': '16px',
-                        'color': '#070707',
+                        'color': '#000007',
                         'font-family': "'Gotham-Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
                     }
                 }

@@ -35,6 +35,16 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     src: url('/fonts/Noto-Sans.woff2') format('woff2')
 }
 
+@font-face {
+    font-family: 'PP Right Serif Mono Dark';
+    src: url('/fonts/PPRightSerifMono-Dark.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Title Noto Sans TC';
+    src: url('/fonts/NotoSansTC-SemiBold.ttf') format('truetype');
+}
+
 @media #{$mobile} {
     html, body {
       margin: 0;
@@ -148,10 +158,6 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         &::after {
             background: rgba(255, 255, 255, 0.15);
         }
-
-        .title-prelogo {
-            display: none;
-        }
     }
 
     &.title-dark {
@@ -183,26 +189,6 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         }
     }
 
-    .title-deco {
-        position: absolute;
-        width: 120px;
-        height: auto;
-        pointer-events: none;
-        z-index: 2;
-
-        &.title-deco-left {
-            top: 0;
-            left: 0;
-            transform-origin: top left;
-        }
-
-        &.title-deco-right {
-            bottom: 0;
-            right: 0;
-            transform-origin: bottom right;
-        }
-    }
-
     .title-logo {
         position: absolute;
         height: auto;
@@ -210,108 +196,25 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         z-index: 3;
 
         &.title-logo-floating {
-            top: 60px;
-            width: 250px;
-            transform: translate(-50%, 0);
+            top: 50%;
+            width: 305px;
+            transform: translate(-50%, -50%);
         }
 
         &.title-logo-compact {
             top: 50%;
-            width: 250px;
+            width: 162px;
             transform: translate(-50%, -50%);
         }
     }
 
-    .title-prelogo {
-        position: absolute;
-        top: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: calc(100% - 64px);
-        text-align: center;
-        color: rgb(253, 241, 175);
-        font-size: 16px;
-        letter-spacing: 0.3px;
-        z-index: 3;
-        pointer-events: none;
-
-        @media #{$mobile} {
-            top: 28px;
-        }
-    }
-
-    .title-copy-block {
-        position: absolute;
-        top: calc(50% + 20px);
-        left: 50%;
-        transform: translate(-50%, -50%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 12px;
-        width: calc(100% - 64px);
-        color: rgb(253, 241, 175);
-        z-index: 3;
-
-        .title-headline {
-            font-family: 'Gotham-Black';
-            font-size: 34px;
-            letter-spacing: 1px;
-        }
-
-        .title-subheadline {
-            font-size: 16px;
-            letter-spacing: 0.3px;
-        }
-
-    }
-
-    .title-message {
-        position: absolute;
-        bottom: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: calc(100% - 64px);
-        text-align: center;
-        color: rgb(253, 241, 175);
-        font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
-        font-size: 20px;
-        letter-spacing: 0.3px;
-        line-height: 1.6;
-        z-index: 3;
-    }
-
     @media #{$mobile} {
-        .title-deco-left {
-            transform: scale(0.55);
-        }
-
-        .title-deco-right {
-            transform: scale(0.7);
-        }
-
         .title-logo.title-logo-floating {
-            width: 163px;
+            width: 198px;
         }
 
         .title-logo.title-logo-compact {
-            width: 160px;
-        }
-
-        .title-copy-block {
-            .title-headline {
-                font-size: 25px;
-            }
-
-            .title-subheadline {
-                font-size: 16px;
-            }
-        }
-
-        .title-message {
-            font-size: 16px;
-            bottom: 24px;
+            width: 130px;
         }
     }
 
@@ -320,6 +223,11 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 .wrapper {
     width: 100%;
     margin: 0 auto;
+    color: #000007;
+
+    * {
+        color: #000007;
+    }
 
     .form {
         display: flex;
@@ -328,7 +236,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         margin: 0 auto;
         align-items: center;
         padding: 24px;
-        color: #FFFFFF;
+        color: #000007;
 
         .form-block {
 
@@ -348,7 +256,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
                 .MuiOutlinedInput-root {
                     border: 0px;
-                    color: #070707;
+                    color: #000007;
                     font-size: 16px;
                     background-color: white;
 
@@ -361,7 +269,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                 }
 
                 .MuiSelect-select {
-                    color: #070707;
+                    color: #000007;
                     background-color: white;
                 }
 
@@ -396,7 +304,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                     }
 
                     .MuiInputBase-input {
-                        color: rgba(0, 0, 0, 0.70);
+                        color: #000007;
                         font-family: "Gotham-Black";
                         font-size: 48px;
                         font-style: normal;
@@ -406,7 +314,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                     }
 
                     .MuiOutlinedInput-input:focus {
-                        color: #FFA01F;
+                        color: rgb(96, 136, 162);
                     }
                 }
 
@@ -423,7 +331,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                 font-family: 'Gotham-Light', 'Roboto', sans-serif;
                 font-size: 14px;
                 font-weight: 400;
-                color: #FFFFFF;
+                color: #000007;
                 margin-bottom: 16px;
 
                 @media #{$pc},
@@ -439,8 +347,8 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                 .disclaimer {
                     text-decoration: underline;
                     cursor: pointer;
-                    color: #FFFFFF;
-                    text-decoration-color: #FFFFFF;
+                    color: #000007;
+                    text-decoration-color: #000007;
                 }
             }
 
@@ -486,7 +394,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                 }
 
                 .contact-information-note {
-                    color: #FFFFFF;
+                    color: #000007;
                     font-family: 'Roboto';
                     font-size: 15px;
                     font-style: normal;
@@ -504,7 +412,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
                 .checkbox-custom {
                     padding: 0;
-                    color: #FFFFFF;
+                    color: #000007;
 
                     &.Mui-checked {
                         color: #FFA01F;
@@ -540,13 +448,13 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
                 .label-chinese {
                     font-family: 'Roboto';
-                    color: #FFFFFF;
+                    color: #000007;
                     font-size: 18px;
                 }
 
                 .label-english {
                     font-family: 'Gotham-Light';
-                    color: #FFFFFF;
+                    color: #000007;
                     font-size: 16px;
                 }
 
@@ -560,23 +468,36 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                     letter-spacing: 0.1px;
                     margin-right: 16px;
                     width: 80px;
-                    color: #FFFFFF;
+                    color: #000007;
                     border-radius: 16px;
+                    border: 1px solid rgba(0, 0, 7, 0.2);
+                    background: transparent;
+                    box-shadow: none;
+                    backdrop-filter: none;
+                    -webkit-backdrop-filter: none;
                 }
 
                 .personal-company-button.clicked {
-                    color: #070707;
-                    background: rgba(255, 255, 255, 0.9);
-                    border-color: rgba(255, 255, 255, 0.9);
-                    box-shadow:
-                        0 18px 40px rgba(255, 255, 255, 0.25),
-                        inset 0 2px 4px rgba(255, 255, 255, 0.6);
+                    color: #000007;
+                    background: #FFFFFF;
+                    border-color: #FFFFFF;
+                    box-shadow: none;
                 }
 
                 .personal-company-button.not-clicked {
-                    color: #FFFFFF;
-                    border: 1px solid rgba(255, 255, 255, 0.45);
-                    background: rgba(255, 255, 255, 0.08);
+                    color: #000007;
+                    border: 1px solid rgba(0, 0, 7, 0.2);
+                    background: transparent;
+                    box-shadow: none;
+                }
+
+                .personal-company-button:hover {
+                    box-shadow: none;
+                    background: transparent;
+                }
+
+                .personal-company-button.clicked:hover {
+                    background: #FFFFFF;
                 }
 
                 .receiptName {
@@ -594,12 +515,12 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                     flex-direction: column;
                     gap: 32px;
                     border-radius: 8px;
-                    background: rgba(255, 255, 255, 0.10);
+                    background: rgba(0, 0, 7, 0.08);
                     padding: 16px;
 
                     .valid-text {
                         white-space: pre-line;
-                        color: #FF8982;
+                        color: #000007;
                         font-family: "Roboto";
                         font-size: 12px;
                         font-style: normal;
@@ -643,7 +564,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
                     .add-note-label {
                         font-family: 'Roboto';
-                        color: #FFFFFF;
+                        color: #000007;
                         font-size: 14px;
                         font-style: normal;
                         font-weight: 500;
@@ -652,7 +573,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                     }
 
                     .edit-note-label {
-                        color: #FFFFFF;
+                        color: #000007;
                         text-align: center;
                         font-family: 'Roboto';
                         font-size: 14px;
@@ -674,7 +595,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
                 .privacy-policy-note {
                     margin-left: 5px;
-                    color: #FFFFFF;
+                    color: #000007;
                     font-family: $font-zh;
                         font-size: 14px;
                         font-style: normal;
@@ -686,8 +607,8 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                             font-weight: bold;
                             font-family: $font-zh;
                             text-decoration: underline;
-                            color: #FFFFFF;
-                            text-decoration-color: #FFFFFF;
+                            color: #000007;
+                            text-decoration-color: #000007;
                         }
                     }
                 }
@@ -716,7 +637,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         }
 
         .success-title {
-            color: #070707;
+            color: #000007;
             font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
             font-size: 32px;
             font-style: normal;
@@ -726,7 +647,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         }
 
         .success-title-english {
-            color: #070707;
+            color: #000007;
             font-family: "Gotham-Black";
             font-size: 20px;
             font-style: normal;
@@ -736,7 +657,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         }
 
         .note-chinese {
-            color: rgba(40, 40, 41, 0.80);
+            color: #000007;
             text-align: center;
             font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
             font-size: 14px;
@@ -749,12 +670,12 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
             a {
                 font-family: "Noto Sans";
                 text-decoration: underline;
-                text-decoration-color: rgba(40, 40, 41, 0.80);
+                text-decoration-color: #000007;
             }
         }
 
         .note-english {
-            color: rgba(40, 40, 41, 0.80);
+            color: #000007;
             text-align: center;
             font-family: "Noto Sans";
             font-size: 14px;
@@ -765,7 +686,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
             a {
                 text-decoration: underline;
-                text-decoration-color: rgba(40, 40, 41, 0.80);
+                text-decoration-color: #000007;
             }
         }
     }
@@ -779,7 +700,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
             0 15px 35px rgba(7, 10, 28, 0.25),
             inset 0 1px 0 rgba(255, 255, 255, 0.4),
             inset 0 -6px 12px rgba(7, 10, 28, 0.12);
-        color: #FFFFFF;
+        color: #000007;
         text-transform: none;
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
@@ -795,7 +716,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     }
 
     .glass-button-accent {
-        color: #070707;
+        color: #000007;
         background: rgba(255, 160, 31, 0.9);
         border-color: rgba(255, 160, 31, 0.7);
         box-shadow:
@@ -810,6 +731,31 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
     .continue-button {
         font-weight: 600;
+        border-radius: 32px;
+        background: #E63C23;
+        border: 1px solid #E63C23;
+        box-shadow: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        color: #EDE6DA;
+    }
+
+    .continue-button,
+    .continue-button *,
+    .continue-button .text-en,
+    .continue-button .text-zh {
+        color: #EDE6DA !important;
+    }
+
+    .continue-button:hover {
+        background: #E63C23;
+        box-shadow: none;
+    }
+
+    .continue-button.Mui-disabled {
+        background: #E63C23;
+        color: #EDE6DA;
+        opacity: 0.6;
     }
 
     .fake-pay-button {
@@ -858,20 +804,20 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     }
 }
 
-.note-dialog {
+    .note-dialog {
     .MuiPaper-root {
         width: 312px;
     }
 
-    .glass-button {
-        border-color: rgba(7, 10, 28, 0.12);
-        background: rgba(255, 255, 255, 0.65);
-        box-shadow:
-            0 12px 28px rgba(7, 10, 28, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.6),
-            inset 0 -4px 10px rgba(7, 10, 28, 0.12);
-        color: #070707;
-    }
+        .glass-button {
+            border-color: rgba(7, 10, 28, 0.12);
+            background: rgba(255, 255, 255, 0.65);
+            box-shadow:
+                0 12px 28px rgba(7, 10, 28, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -4px 10px rgba(7, 10, 28, 0.12);
+            color: #000007;
+        }
 
     .glass-button:hover {
         background: rgba(255, 255, 255, 0.85);
@@ -893,7 +839,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     }
 
     .dialog-title {
-        color: #070707;
+        color: #000007;
         font-family: 'Roboto';
         font-size: 24px;
         font-style: normal;
@@ -902,7 +848,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
     .MuiDialogContent-root {
         .dialog-message {
-            color: #070707;
+            color: #000007;
             font-family: 'Roboto';
             font-size: 14px;
             font-style: normal;
@@ -929,7 +875,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
     .MuiOutlinedInput-notchedOutline {
         border: 1px solid rgba(40, 40, 41, 0.10);
-        color: #070707;
+        color: #000007;
         font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
     }
 
@@ -949,10 +895,10 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     }
 }
 
-.MuiFormControl-root {
+    .MuiFormControl-root {
     .MuiFormHelperText-root {
         white-space: pre-line;
-        color: #FF8982 !important;
+        color: #000007 !important;
         margin-left: 0;
         font-family: 'Roboto';
         font-size: 14px;

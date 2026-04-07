@@ -47,7 +47,7 @@ const ConfNoteDialog: React.FC<AddNoteDialogProps> = ({
                     helperText={typeof errors.note?.message === 'string' ? errors.note?.message : undefined} />
                 <p
                     className="note-alert"
-                    style={{ color: noteLength > 200 ? "#FF8982" : "rgba(40, 40, 41, 0.80)" }}
+                    style={{ color: "#000007" }}
                 >
                     {noteLength > 200
                         ?

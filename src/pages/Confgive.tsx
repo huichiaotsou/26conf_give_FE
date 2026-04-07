@@ -309,7 +309,7 @@ const CONFGive = () => {
             TPDirect.card.getPrime((result: any) => {
 
                 if (result.status !== 0) {
-                    document.body.style.backgroundColor = "#227A85";
+                    document.body.style.backgroundColor = "#EDE6DA";
                     document.querySelector(".wrapper")?.classList.add("successAndFailWrapper");
                     setGiveStatus("fail");
                     return;
@@ -512,7 +512,7 @@ const CONFGive = () => {
                                                 <InputAdornment
                                                     position="start"
                                                     sx={{
-                                                        color: isFocused ? "#FFA01F" : "rgba(40, 40, 41, 0.80)"
+                                                        color: "#000007"
                                                     }}
                                                 >
                                                     {isFocused}NT$
