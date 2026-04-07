@@ -35,12 +35,10 @@ const PayButton: React.FC<PayButtonProps> = (props) => {
                     {!disabled && isApplePayReady ? (
                         <div id="apple-pay-button-container" onClick={setupApplePay}></div>
                     ) : (
-                        <>
-                            <button type="button" disabled className="fake-pay-button apple-pay-button"></button>
-                            {disabledMessage && (
-                                <p className="payment-disabled-message text-zh">{disabledMessage}</p>
-                            )}
-                        </>
+                        <button type="button" disabled className="fake-pay-button apple-pay-button"></button>
+                    )}
+                    {disabledMessage && (
+                        <p className="payment-disabled-message text-zh">{disabledMessage}</p>
                     )}
                 </>
 
@@ -54,16 +52,14 @@ const PayButton: React.FC<PayButtonProps> = (props) => {
                             onClick={setupGooglePay}
                         ></button>
                     ) : (
-                        <>
-                            <button
-                                type="button"
-                                disabled
-                                className="fake-pay-button google-pay-button"
-                            ></button>
-                            {disabledMessage && (
-                                <p className="payment-disabled-message text-zh">{disabledMessage}</p>
-                            )}
-                        </>
+                        <button
+                            type="button"
+                            disabled
+                            className="fake-pay-button google-pay-button"
+                        ></button>
+                    )}
+                    {disabledMessage && (
+                        <p className="payment-disabled-message text-zh">{disabledMessage}</p>
                     )}
                 </>
             )}

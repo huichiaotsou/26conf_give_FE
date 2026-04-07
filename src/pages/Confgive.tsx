@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, ReactNode } from "react";
 import { TextField, InputAdornment, Box, Checkbox, FormControlLabel, FormControl, FormHelperText } from "@mui/material";
 import CreditCard from "./CreditCard";
 import ExchangeRate from "./ExchangeRate";
@@ -47,6 +47,13 @@ const formatMonthDay = (date: Date) => {
     return `${month}/${day}`;
 };
 
+const givingClosedAlertTitle = (
+    <>
+        <span className="text-zh">尚未開放</span>
+        <span className="text-en"> Not Open Yet</span>
+    </>
+);
+
 const CONFGive = () => {
     const { register, handleSubmit, getValues, watch, setValue, clearErrors, formState: { errors, isValid } } = useForm<ConfGiveProps>(
         {
@@ -65,6 +72,7 @@ const CONFGive = () => {
     const [titleHeight, setTitleHeight] = useState(536);
     const [message, setMessage] = useState("");
     const [enMessage, setEnMessage] = useState("");
+    const [alertTitle, setAlertTitle] = useState<ReactNode>();
     const [giveStatus, setGiveStatus] = useState("form");
     const [isApplePayReady, setIsApplePayReady] = useState(false);
     const [isGooglePayReady, setIsGooglePayReady] = useState(false);
@@ -227,7 +235,7 @@ const CONFGive = () => {
     // **提交**
     const onSubmit: SubmitHandler<ConfGiveProps> = (data) => {
         if (!isGivingOpen) {
-            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Donation will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.");
+            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Conference Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
             return;
         }
 
@@ -241,7 +249,7 @@ const CONFGive = () => {
     const setupApplePay = async () => {
         if (!isGivingOpen) {
             setIsApplePayReady(false);
-            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Donation will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.");
+            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Conference Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
             return;
         }
 
@@ -295,7 +303,7 @@ const CONFGive = () => {
     const setupGooglePay = () => {
         if (!isGivingOpen) {
             setIsGooglePayReady(false);
-            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Donation will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.");
+            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Conference Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
             return;
         }
 
@@ -476,15 +484,17 @@ const CONFGive = () => {
     };
 
     // **設置 alert dialog **
-    const handleOpenAlert = (message: string, enMessage: string) => {
+    const handleOpenAlert = (message: string, enMessage: string, title?: ReactNode) => {
         setMessage(message);
         setEnMessage(enMessage);
+        setAlertTitle(title);
         setAlertOpen(true);
     };
 
     // **關閉 alert dialog **
     const handleCloseAlert = () => {
         setAlertOpen(false);
+        setAlertTitle(undefined);
     };
 
     // **關閉 add note dialog **
@@ -727,6 +737,7 @@ const CONFGive = () => {
                 )}
                 <ConfAlertDialog
                     open={alertOpen}
+                    title={alertTitle}
                     message={message}
                     enMessage={enMessage}
                     onClose={handleCloseAlert}
