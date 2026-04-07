@@ -17,6 +17,7 @@ export default defineConfig({
         VITE_TAPPAY_ENV: 'production',
         VITE_PAYMENT_API_URL: 'https://confgive.thehope.app/api/payment',
         VITE_GIVING_START_AT: '',
+        VITE_GIVING_END_AT: '',
       },
       { defineOn: 'import.meta.env' }
     ),

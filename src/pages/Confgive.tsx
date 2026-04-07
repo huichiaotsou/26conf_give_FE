@@ -31,7 +31,7 @@ const RECEIPT_TYPES = {
     COMPANY: "company",
 };
 
-const parseGivingStartAt = (value: string | undefined) => {
+const parseGivingAt = (value: string | undefined) => {
     if (!value) return null;
 
     const normalizedValue = value.trim();
@@ -85,9 +85,17 @@ const CONFGive = () => {
     const isGooglePayAvailable = Boolean(googleMerchantIdRef.current) && googlePayFeatureEnabled;
     const appEnv = `${import.meta.env.VITE_APP_ENV ?? 'production'}`.toLowerCase();
     const isProductionEnvironment = appEnv === 'production';
-    const givingStartAt = parseGivingStartAt(import.meta.env.VITE_GIVING_START_AT);
-    const isGivingOpen = !isProductionEnvironment || !givingStartAt || new Date() >= givingStartAt;
-    const givingOpenMessage = givingStartAt ? `奉獻將於 ${formatMonthDay(givingStartAt)} 開放` : '';
+    const givingStartAt = parseGivingAt(import.meta.env.VITE_GIVING_START_AT);
+    const givingEndAt = parseGivingAt(import.meta.env.VITE_GIVING_END_AT);
+    const now = new Date();
+    const isBeforeGivingStart = isProductionEnvironment && !!givingStartAt && now < givingStartAt;
+    const isAfterGivingEnd = isProductionEnvironment && !!givingEndAt && now > givingEndAt;
+    const isGivingOpen = !isBeforeGivingStart && !isAfterGivingEnd;
+    const givingClosedMessage = isBeforeGivingStart && givingStartAt
+        ? `奉獻將於 ${formatMonthDay(givingStartAt)} 開放`
+        : isAfterGivingEnd
+            ? '目前未開放奉獻'
+            : '';
 
     const handleFocus = () => {
         setIsFocused(true);
@@ -219,7 +227,7 @@ const CONFGive = () => {
     // **提交**
     const onSubmit: SubmitHandler<ConfGiveProps> = (data) => {
         if (!isGivingOpen) {
-            handleOpenAlert(givingOpenMessage, `Donation will open on ${formatMonthDay(givingStartAt!)}`);
+            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Donation will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.");
             return;
         }
 
@@ -233,7 +241,7 @@ const CONFGive = () => {
     const setupApplePay = async () => {
         if (!isGivingOpen) {
             setIsApplePayReady(false);
-            handleOpenAlert(givingOpenMessage, `Donation will open on ${formatMonthDay(givingStartAt!)}`);
+            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Donation will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.");
             return;
         }
 
@@ -287,7 +295,7 @@ const CONFGive = () => {
     const setupGooglePay = () => {
         if (!isGivingOpen) {
             setIsGooglePayReady(false);
-            handleOpenAlert(givingOpenMessage, `Donation will open on ${formatMonthDay(givingStartAt!)}`);
+            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Donation will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.");
             return;
         }
 
@@ -711,7 +719,7 @@ const CONFGive = () => {
                                         isApplePayReady={isApplePayReady}
                                         isGooglePayReady={isGooglePayReady}
                                         disabled={!isGivingOpen}
-                                        disabledMessage={!isGivingOpen ? givingOpenMessage : ''}></PayButton>
+                                        disabledMessage={!isGivingOpen ? givingClosedMessage : ''}></PayButton>
                                 </Box>
                             </Box>
                         </Box>
