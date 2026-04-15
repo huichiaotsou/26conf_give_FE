@@ -306,12 +306,22 @@ const CONFGive = () => {
             total: { label: "付給 TapPay", amount: { currency: "TWD", value: getValues("amount").toString() } },
         };
 
+        // TEMP. LOG
+        console.log("Apple Pay merchant ID:", appleMerchantIdRef.current);
+        console.log("TapPay env:", import.meta.env.VITE_TAPPAY_ENV);
+        console.log("Payment request:", paymentRequest);
+
+
+
         const result: {
             browserSupportPaymentRequest: boolean,
             canMakePaymentWithActiveCard: boolean
         } = await new Promise((resolve) => {
             TPDirect.paymentRequestApi.setupPaymentRequest(paymentRequest, resolve);
         });
+
+        // TEMP. LOG
+        console.log("Apple Pay setupPaymentRequest result:", result);
 
         if (!result.browserSupportPaymentRequest) {
             setIsApplePayReady(false);
