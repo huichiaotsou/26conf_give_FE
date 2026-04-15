@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-
-export const TITLE_MAX_HEIGHT = 402;
-export const TITLE_MIN_HEIGHT = 186;
-export const TITLE_COLLAPSE_THRESHOLD = 240;
-export const COLLAPSED_HEIGHT_RATIO = 0.5;
-export const COLLAPSED_MIN_HEIGHT = 126;
-export const COLLAPSED_TOP_OFFSET = 25;
-export const COLLAPSED_WIDTH_RATIO = 0.5;
-const RESULT_VIEW_HEIGHT_RATIO = 0.4;
+import {
+    COLLAPSED_HEIGHT_RATIO,
+    COLLAPSED_WIDTH_RATIO,
+    getResponsiveTitleMetrics,
+    useIsMobileViewport,
+} from "./bannerMetrics";
 
 interface HeaderProps {
     titleHeight: number;
@@ -17,11 +14,20 @@ interface HeaderProps {
 
 const Header = ({ titleHeight, setTitleHeight, giveStatus }: HeaderProps) => {
     const [scrollOpacity, setScrollOpacity] = useState(0);
+    const isMobile = useIsMobileViewport();
+    const {
+        titleMaxHeight,
+        titleMinHeight,
+        titleCollapseThreshold,
+        collapsedMinHeight,
+        collapsedTopOffset,
+        resultViewHeight,
+    } = getResponsiveTitleMetrics(isMobile);
 
     useEffect(() => {
         if (giveStatus !== "form") {
             setScrollOpacity(0);
-            setTitleHeight(TITLE_MAX_HEIGHT);
+            setTitleHeight(titleMaxHeight);
             return;
         }
 
@@ -34,21 +40,20 @@ const Header = ({ titleHeight, setTitleHeight, giveStatus }: HeaderProps) => {
             setScrollOpacity(opacity);
 
             // 計算新的高度
-            const newHeight = Math.max(TITLE_MIN_HEIGHT, TITLE_MAX_HEIGHT - currentScrollY);
+            const newHeight = Math.max(titleMinHeight, titleMaxHeight - currentScrollY);
             setTitleHeight(newHeight);
         };
 
         handleScroll();
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [giveStatus, setTitleHeight]);
+    }, [giveStatus, setTitleHeight, titleMaxHeight, titleMinHeight]);
 
     const isFormView = giveStatus === "form";
     const isResultView = !isFormView;
-    const showFullBanner = isResultView || titleHeight > TITLE_COLLAPSE_THRESHOLD;
+    const showFullBanner = isResultView || titleHeight > titleCollapseThreshold;
     const isCollapsed = isFormView && !showFullBanner;
-    const collapsedHeight = Math.max(COLLAPSED_MIN_HEIGHT, TITLE_MIN_HEIGHT * COLLAPSED_HEIGHT_RATIO, titleHeight * COLLAPSED_HEIGHT_RATIO);
-    const resultViewHeight = Math.round(TITLE_MAX_HEIGHT * RESULT_VIEW_HEIGHT_RATIO);
+    const collapsedHeight = Math.max(collapsedMinHeight, titleMinHeight * COLLAPSED_HEIGHT_RATIO, titleHeight * COLLAPSED_HEIGHT_RATIO);
     const displayedHeight = isFormView ? (showFullBanner ? titleHeight : collapsedHeight) : resultViewHeight;
     const collapsedWidthPercent = COLLAPSED_WIDTH_RATIO * 100;
     const titleClasses = [
@@ -57,7 +62,7 @@ const Header = ({ titleHeight, setTitleHeight, giveStatus }: HeaderProps) => {
     ].filter(Boolean).join(" ");
     const safeAreaTop = "env(safe-area-inset-top, 0px)";
     const topOffset = isFormView
-        ? (isCollapsed ? `calc(${safeAreaTop} + ${COLLAPSED_TOP_OFFSET}px)` : "0px")
+        ? (isCollapsed ? `calc(${safeAreaTop} + ${collapsedTopOffset}px)` : "0px")
         : "0px";
 
     return (

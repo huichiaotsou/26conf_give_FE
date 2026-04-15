@@ -4,7 +4,8 @@ import CreditCard from "./CreditCard";
 import ExchangeRate from "./ExchangeRate";
 import { useForm, SubmitHandler } from "react-hook-form";
 import "./Congive.scss";
-import Header, { COLLAPSED_HEIGHT_RATIO, COLLAPSED_TOP_OFFSET, TITLE_COLLAPSE_THRESHOLD, TITLE_MIN_HEIGHT } from "./Header";
+import Header from "./Header";
+import { COLLAPSED_HEIGHT_RATIO, TITLE_MAX_HEIGHT, getResponsiveTitleMetrics, useIsMobileViewport } from "./bannerMetrics";
 import GiveSucessOrFail from "./GiveSucessOrFail";
 import ConfAlertDialog from "./ConfAlertDialog";
 import PaymentSelect from "./PaymentSelect";
@@ -69,7 +70,7 @@ const CONFGive = () => {
     );
     const [alertOpen, setAlertOpen] = useState(false);
     const [addNoteDialogOpen, setAddNoteDialogOpen] = useState(false);
-    const [titleHeight, setTitleHeight] = useState(536);
+    const [titleHeight, setTitleHeight] = useState(TITLE_MAX_HEIGHT);
     const [message, setMessage] = useState("");
     const [enMessage, setEnMessage] = useState("");
     const [alertTitle, setAlertTitle] = useState<ReactNode>();
@@ -527,17 +528,25 @@ const CONFGive = () => {
     }
 
     const isFormView = giveStatus === "form";
-    const showFullBanner = isFormView && titleHeight > TITLE_COLLAPSE_THRESHOLD;
-    const collapsedHeight = Math.max(TITLE_MIN_HEIGHT * COLLAPSED_HEIGHT_RATIO, titleHeight * COLLAPSED_HEIGHT_RATIO);
+    const isMobileViewport = useIsMobileViewport();
+    const {
+        titleMinHeight,
+        titleCollapseThreshold,
+        collapsedMinHeight,
+        collapsedTopOffset,
+    } = getResponsiveTitleMetrics(isMobileViewport);
+    const showFullBanner = isFormView && titleHeight > titleCollapseThreshold;
+    const collapsedHeight = Math.max(collapsedMinHeight, titleMinHeight * COLLAPSED_HEIGHT_RATIO, titleHeight * COLLAPSED_HEIGHT_RATIO);
     const effectiveTitleHeight = isFormView ? (showFullBanner ? titleHeight : collapsedHeight) : 124;
-    const titleTopOffset = isFormView && !showFullBanner ? COLLAPSED_TOP_OFFSET : 0;
+    const titleTopOffset = isFormView && !showFullBanner ? collapsedTopOffset : 0;
+    const collapsedWrapperMarginBase = isMobileViewport ? 436.75 * 0.5 : 436.75;
 
     const safeAreaTopInset = "env(safe-area-inset-top, 0px)";
     const wrapperMarginBase = giveStatus !== "form"
         ? 0
         : (effectiveTitleHeight > 124
             ? (effectiveTitleHeight + scrollY + titleTopOffset)
-            : 436.75);
+            : collapsedWrapperMarginBase);
     const wrapperMarginTop = giveStatus !== "form"
         ? 0
         : `calc(${wrapperMarginBase}px + ${safeAreaTopInset})`;
