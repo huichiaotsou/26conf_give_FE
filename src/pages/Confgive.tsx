@@ -493,9 +493,9 @@ const CONFGive = () => {
                         top: 0,
                         behavior: "smooth",
                     });
-                    // 3秒後跳轉到這個畫面： thehope.co/24report
+                    // 3秒後跳轉到這個畫面： thehope.co/25report
                     setTimeout(() => {
-                        window.location.href = "https://thehope.co/24report";
+                        window.location.href = "https://thehope.co/25report";
                     }, 3000);
                 } else {
                     setError();
