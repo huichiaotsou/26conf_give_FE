@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef, ReactNode } from "react";
-import { TextField, InputAdornment, Box, Checkbox, FormControlLabel, FormControl, FormHelperText } from "@mui/material";
+import { useEffect, useState, useRef, ReactNode, FormEvent } from "react";
+import { TextField, InputAdornment, Box, Checkbox, FormControlLabel, FormControl, FormHelperText, Dialog, DialogActions, DialogContent, Button } from "@mui/material";
 import CreditCard from "./CreditCard";
 import ExchangeRate from "./ExchangeRate";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -88,10 +88,15 @@ const CONFGive = () => {
     });
     const [outputNote, setOutputNote] = useState('');
     const [privacyPolicyDialogOpen, setPrivacyPolicyDialogOpen] = useState(false);
+    const [isGivingLockBypassed, setIsGivingLockBypassed] = useState(false);
+    const [givingLockPasswordDialogOpen, setGivingLockPasswordDialogOpen] = useState(false);
+    const [givingLockPasswordInput, setGivingLockPasswordInput] = useState("");
+    const [givingLockPasswordError, setGivingLockPasswordError] = useState("");
     const appleMerchantIdRef = useRef<string>(import.meta.env.VITE_APPLE_MERCHANT_ID || '');
     const googleMerchantIdRef = useRef<string>(import.meta.env.VITE_GOOGLE_MERCHANT_ID || '');
     const googlePayFeatureEnabled = `${import.meta.env.VITE_ENABLE_GOOGLE_PAY ?? 'true'}`.toLowerCase() !== 'false';
     const isGooglePayAvailable = Boolean(googleMerchantIdRef.current) && googlePayFeatureEnabled;
+    const givingLockPassword = `${import.meta.env.VITE_GIVING_LOCK_PASSWORD ?? ''}`.trim();
     const appEnv = `${import.meta.env.VITE_APP_ENV ?? 'production'}`.toLowerCase();
     const isProductionEnvironment = appEnv === 'production';
     const givingStartAt = parseGivingAt(import.meta.env.VITE_GIVING_START_AT);
@@ -101,10 +106,12 @@ const CONFGive = () => {
     const isAfterGivingEnd = isProductionEnvironment && !!givingEndAt && now > givingEndAt;
     const isGivingOpen = !isBeforeGivingStart && !isAfterGivingEnd;
     const givingClosedMessage = isBeforeGivingStart && givingStartAt
-        ? `奉獻將於 ${formatMonthDay(givingStartAt)} 開放`
+        ? `特會奉獻將於 ${formatMonthDay(givingStartAt)} 開放`
         : isAfterGivingEnd
             ? '目前未開放奉獻'
             : '';
+    const canGive = isGivingOpen || isGivingLockBypassed;
+    const isGivingLocked = !canGive && !!givingClosedMessage;
 
     const handleFocus = () => {
         setIsFocused(true);
@@ -112,6 +119,36 @@ const CONFGive = () => {
 
     const handleBlur = () => {
         setIsFocused(false);
+    };
+
+    const handleOpenGivingLockPassword = () => {
+        setGivingLockPasswordInput("");
+        setGivingLockPasswordError("");
+        setGivingLockPasswordDialogOpen(true);
+    };
+
+    const handleCloseGivingLockPassword = () => {
+        setGivingLockPasswordDialogOpen(false);
+        setGivingLockPasswordError("");
+    };
+
+    const handleSubmitGivingLockPassword = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (!givingLockPassword) {
+            setGivingLockPasswordError("解除密碼尚未設定");
+            return;
+        }
+
+        if (givingLockPasswordInput.trim() !== givingLockPassword) {
+            setGivingLockPasswordError("密碼錯誤");
+            return;
+        }
+
+        setIsGivingLockBypassed(true);
+        setGivingLockPasswordDialogOpen(false);
+        setGivingLockPasswordInput("");
+        setGivingLockPasswordError("");
     };
 
     // **初始化設定 **
@@ -235,7 +272,7 @@ const CONFGive = () => {
 
     // **提交**
     const onSubmit: SubmitHandler<ConfGiveProps> = (data) => {
-        if (!isGivingOpen) {
+        if (!canGive) {
             handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Conference Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
             return;
         }
@@ -248,7 +285,7 @@ const CONFGive = () => {
 
     // **設置 Apple Pay**
     const setupApplePay = async () => {
-        if (!isGivingOpen) {
+        if (!canGive) {
             setIsApplePayReady(false);
             handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Conference Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
             return;
@@ -302,7 +339,7 @@ const CONFGive = () => {
 
 
     const setupGooglePay = () => {
-        if (!isGivingOpen) {
+        if (!canGive) {
             setIsGooglePayReady(false);
             handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Conference Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
             return;
@@ -737,8 +774,8 @@ const CONFGive = () => {
                                         setupApplePay={setupApplePay}
                                         isApplePayReady={isApplePayReady}
                                         isGooglePayReady={isGooglePayReady}
-                                        disabled={!isGivingOpen}
-                                        disabledMessage={!isGivingOpen ? givingClosedMessage : ''}></PayButton>
+                                        disabled={!canGive}
+                                        disabledMessage={!canGive ? givingClosedMessage : ''}></PayButton>
                                 </Box>
                             </Box>
                         </Box>
@@ -770,6 +807,57 @@ const CONFGive = () => {
                         <CircularProgress className="loading-icon" />
                     </Box>
                 )}
+                {isGivingLocked && (
+                    <Box className="giving-lock-overlay">
+                        <button
+                            type="button"
+                            className="giving-lock-close"
+                            aria-label="解除奉獻時間限制"
+                            onClick={handleOpenGivingLockPassword}
+                        >
+                            X
+                        </button>
+                        <p className="giving-lock-message text-zh">{givingClosedMessage}</p>
+                    </Box>
+                )}
+                <Dialog
+                    open={givingLockPasswordDialogOpen}
+                    onClose={handleCloseGivingLockPassword}
+                    className="giving-lock-dialog"
+                >
+                    <form onSubmit={handleSubmitGivingLockPassword}>
+                        <DialogContent>
+                            <TextField
+                                className="width100 m-t-8"
+                                type="password"
+                                placeholder="admin code"
+                                value={givingLockPasswordInput}
+                                onChange={(event) => {
+                                    setGivingLockPasswordInput(event.target.value);
+                                    setGivingLockPasswordError("");
+                                }}
+                                error={!!givingLockPasswordError}
+                                helperText={givingLockPasswordError}
+                                autoFocus
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                type="button"
+                                onClick={handleCloseGivingLockPassword}
+                                className="dialog-button glass-button font-gotham-light"
+                            >
+                                CANCEL
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="dialog-button glass-button glass-button-accent font-gotham-light"
+                            >
+                                CONFIRM
+                            </Button>
+                        </DialogActions>
+                    </form>
+                </Dialog>
             </div>
         </div>
     );

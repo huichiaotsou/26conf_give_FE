@@ -21,8 +21,9 @@ VITE_TAPPAY_ENV=               # 'production' (default) or 'sandbox' to pick Tap
 VITE_PAYMENT_API_URL=          # backend payment API (defaults to https://confgive.thehope.app/api/payment)
 VITE_GIVING_START_AT=          # optional open time, e.g. 2026-04-20T12:00:00+08:00
 VITE_GIVING_END_AT=            # optional close time, e.g. 2026-04-30T23:59:59+08:00
+VITE_GIVING_LOCK_PASSWORD=     # password used to dismiss the closed-giving overlay
 ```
-These are read in `src/pages/Confgive.tsx` during `TPDirect.setupSDK`; missing values will keep Pay integrations from initializing. When `VITE_APP_ENV=production`, the UI checks the giving window: before `VITE_GIVING_START_AT` it shows `奉獻將於 MM/DD 開放`, and after `VITE_GIVING_END_AT` it shows `目前未開放奉獻`. When `VITE_APP_ENV=staging`, this lock is bypassed.
+These are read in `src/pages/Confgive.tsx` during `TPDirect.setupSDK`; missing values will keep Pay integrations from initializing. When `VITE_APP_ENV=production`, the UI checks the giving window: before `VITE_GIVING_START_AT` it shows `奉獻將於 MM/DD 開放`, and after `VITE_GIVING_END_AT` it shows `目前未開放奉獻`. The closed-giving overlay can be dismissed with `VITE_GIVING_LOCK_PASSWORD`. When `VITE_APP_ENV=staging`, this lock is bypassed.
 
 ## Install & run
 ```bash

@@ -832,6 +832,55 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     }
 }
 
+.giving-lock-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.56);
+    backdrop-filter: grayscale(1) brightness(0.72);
+    -webkit-backdrop-filter: grayscale(1) brightness(0.72);
+}
+
+.giving-lock-close {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 18px);
+    right: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.giving-lock-message {
+    margin: 0;
+    color: #fff !important;
+    font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.giving-lock-dialog {
+    .MuiPaper-root {
+        width: min(312px, calc(100vw - 48px));
+    }
+}
+
     .note-dialog {
     .MuiPaper-root {
         width: 312px;

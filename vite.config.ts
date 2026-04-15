@@ -18,6 +18,7 @@ export default defineConfig({
         VITE_PAYMENT_API_URL: 'https://confgive.thehope.app/api/payment',
         VITE_GIVING_START_AT: '',
         VITE_GIVING_END_AT: '',
+        VITE_GIVING_LOCK_PASSWORD: '',
       },
       { defineOn: 'import.meta.env' }
     ),
