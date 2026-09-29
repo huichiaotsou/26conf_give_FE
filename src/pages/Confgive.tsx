@@ -106,7 +106,7 @@ const CONFGive = () => {
     const isAfterGivingEnd = isProductionEnvironment && !!givingEndAt && now > givingEndAt;
     const isGivingOpen = !isBeforeGivingStart && !isAfterGivingEnd;
     const givingClosedMessage = isBeforeGivingStart && givingStartAt
-        ? `特會奉獻將於 ${formatMonthDay(givingStartAt)} 開放`
+        ? `奉獻將於 ${formatMonthDay(givingStartAt)} 開放`
         : isAfterGivingEnd
             ? '目前未開放奉獻'
             : '';
