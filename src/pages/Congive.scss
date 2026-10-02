@@ -101,15 +101,15 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     // **根據螢幕大小切換背景圖片**
     @media #{$pc},
     #{$tablet} {
-        background-image: url('/images/pc-banner-middle-size.webp');
+        background-image: url('/images/pc-banner-middle-size-1032x536.png');
     }
 
     @media #{$tablet} {
-        background-image: url('/images/pc-banner-large-size.webp');
+        background-image: url('/images/pc-banner-large-size-1553x536.png');
     }
 
     @media #{$mobile} {
-        background-image: url('/images/mobile-banner.webp');
+        background-image: url('/images/mobile-banner-390x536.png');
     }
 
     // 液態玻璃的暖色高光
@@ -203,7 +203,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
         &.title-logo-compact {
             top: 50%;
-            width: 162px;
+            width: 130px;
             transform: translate(-50%, -50%);
         }
     }
@@ -214,7 +214,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         }
 
         .title-logo.title-logo-compact {
-            width: 98px;
+            width: 78px;
         }
     }
 
@@ -314,7 +314,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                     }
 
                     .MuiOutlinedInput-input:focus {
-                        color: rgb(96, 136, 162);
+                        color: rgb(223, 88, 59);
                     }
                 }
 

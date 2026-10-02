@@ -273,7 +273,7 @@ const CONFGive = () => {
     // **提交**
     const onSubmit: SubmitHandler<ConfGiveProps> = (data) => {
         if (!canGive) {
-            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Conference Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
+            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `The Hope Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
             return;
         }
 
@@ -287,7 +287,7 @@ const CONFGive = () => {
     const setupApplePay = async () => {
         if (!canGive) {
             setIsApplePayReady(false);
-            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Conference Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
+            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `The Hope Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
             return;
         }
 
@@ -348,7 +348,7 @@ const CONFGive = () => {
     const setupGooglePay = () => {
         if (!canGive) {
             setIsGooglePayReady(false);
-            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `Conference Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
+            handleOpenAlert(givingClosedMessage, isBeforeGivingStart && givingStartAt ? `The Hope Giving will open on ${formatMonthDay(givingStartAt)}` : "Giving is currently unavailable.", givingClosedAlertTitle);
             return;
         }
 
@@ -493,9 +493,9 @@ const CONFGive = () => {
                         top: 0,
                         behavior: "smooth",
                     });
-                    // 3秒後跳轉到這個畫面： thehope.co/25report
+                    // 3 秒後跳轉至 Prayer Map
                     setTimeout(() => {
-                        window.location.href = "https://thehope.co/25report";
+                        window.location.href = "https://prayermap.thehope.co/";
                     }, 3000);
                 } else {
                     setError();
@@ -619,7 +619,7 @@ const CONFGive = () => {
                                                 <InputAdornment
                                                     position="start"
                                                     sx={{
-                                                        color: "#000007"
+                                                        color: isFocused ? "rgb(223, 88, 59)" : "#000007"
                                                     }}
                                                 >
                                                     {isFocused}NT$

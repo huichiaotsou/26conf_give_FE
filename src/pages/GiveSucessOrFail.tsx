@@ -57,7 +57,7 @@ const GiveSucessOrFail = ({ giveStatus }: { giveStatus: string }) => {
                     if (giveStatus === "fail") {
                         window.location.href = "/";
                     } else {
-                        window.location.href = "https://thehope.co/25report";
+                        window.location.href = "https://prayermap.thehope.co/";
                     };
                 }}>
                 {giveStatus === "fail" ?

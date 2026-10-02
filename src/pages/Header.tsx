@@ -81,12 +81,12 @@ const Header = ({ titleHeight, setTitleHeight, giveStatus }: HeaderProps) => {
                 borderTopRightRadius: isFormView ? undefined : "32px",
             } as React.CSSProperties}
         >
-            {isFormView && (
+            {isCollapsed && (
                 <img
                     loading="lazy"
-                    src="/images/conf_logo.png"
-                    alt="FORWARD Restore"
-                    className={`title-logo ${showFullBanner ? "title-logo-floating" : "title-logo-compact"}`}
+                    src="/images/logo.png"
+                    alt="The Hope Giving"
+                    className="title-logo title-logo-compact"
                 />
             )}
         </div>
