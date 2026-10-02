@@ -23,6 +23,14 @@ const isProduction = import.meta.env.PROD && `${import.meta.env.VITE_APP_ENV ?? 
 const purchaseStoragePrefix = "giving-ga-purchase:";
 const emittedPurchases = new Set<string>();
 
+const donationItems = (amount: number): readonly PurchaseItem[] => [{
+    item_id: "giving",
+    item_name: "Giving",
+    item_category: "Donation",
+    price: amount,
+    quantity: 1,
+}];
+
 const canTrack = () =>
     typeof window !== "undefined" &&
     isProduction &&
@@ -65,7 +73,13 @@ export const trackEvent = (name: string, parameters: EventParameters = {}) => {
     }
 };
 
-export const trackGiveStart = () => trackEvent("give_start");
+export const trackGiveStart = (amount: number) => {
+    if (!Number.isFinite(amount) || amount <= 0) return;
+
+    const parameters = { currency: "TWD", value: amount, items: donationItems(amount) };
+    trackEvent("give_start", parameters);
+    trackEvent("begin_checkout", parameters);
+};
 
 export const trackAmountSelect = (amount: number, amountType: "preset" | "custom") => {
     if (!Number.isFinite(amount) || amount <= 0) return;
@@ -74,7 +88,12 @@ export const trackAmountSelect = (amount: number, amountType: "preset" | "custom
 
 export const trackPaymentInfo = (amount: number, paymentType: PaymentType) => {
     if (!Number.isFinite(amount) || amount <= 0) return;
-    trackEvent("add_payment_info", { currency: "TWD", value: amount, payment_type: paymentType });
+    trackEvent("add_payment_info", {
+        currency: "TWD",
+        value: amount,
+        payment_type: paymentType,
+        items: donationItems(amount),
+    });
 };
 
 export const trackGiveSubmit = (amount: number, paymentType: PaymentType) => {
@@ -83,8 +102,12 @@ export const trackGiveSubmit = (amount: number, paymentType: PaymentType) => {
 };
 
 export const trackGiveFailure = (amount: number, paymentType: PaymentType, errorType: "payment_declined" | "gateway_error" | "network_error" | "validation_error" | "unknown") => {
-    if (!Number.isFinite(amount) || amount <= 0) return;
-    trackEvent("give_failed", { value: amount, currency: "TWD", payment_type: paymentType, error_type: errorType });
+    if (Number.isFinite(amount) && amount > 0) {
+        trackEvent("give_failed", { value: amount, currency: "TWD", payment_type: paymentType, error_type: errorType });
+        return;
+    }
+
+    trackEvent("give_failed", { payment_type: paymentType, error_type: errorType });
 };
 
 const hasTrackedPurchase = (transactionId: string) => {
@@ -115,13 +138,7 @@ export const trackGiveSuccess = (transactionId: string, amount: number) => {
         transaction_id: transactionId,
         value: amount,
         currency: "TWD",
-        items: [{
-            item_id: "giving",
-            item_name: "Giving",
-            item_category: "Donation",
-            price: amount,
-            quantity: 1,
-        }],
+        items: donationItems(amount),
     });
 };
 

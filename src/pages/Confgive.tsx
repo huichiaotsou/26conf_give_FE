@@ -166,10 +166,16 @@ const CONFGive = () => {
     const handleFocus = () => {
         setIsFocused(true);
         amountAtFocus.current = Number(getValues("amount"));
-        if (!hasTrackedGiveStart.current) {
-            hasTrackedGiveStart.current = true;
-            trackGiveStart();
-        }
+    };
+
+    const trackGiveStartOnce = () => {
+        if (hasTrackedGiveStart.current) return;
+
+        const amount = Number(getValues("amount"));
+        if (!Number.isFinite(amount) || amount <= 0) return;
+
+        hasTrackedGiveStart.current = true;
+        trackGiveStart(amount);
     };
 
     const handleBlur = () => {
@@ -200,8 +206,6 @@ const CONFGive = () => {
 
         const formValues = getValues();
         const amount = Number(formValues.amount);
-        if (!Number.isFinite(amount) || amount <= 0) return;
-
         failureTrackedForAttempt.current = true;
         trackGiveFailure(amount, toAnalyticsPaymentType(formValues.paymentType), errorType);
     };
@@ -716,7 +720,11 @@ const CONFGive = () => {
                     </Suspense>
                 )}
                 {giveStatus === "form" && (
-                    <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+                    <form
+                        autoComplete="off"
+                        onFocusCapture={trackGiveStartOnce}
+                        onSubmit={handleSubmit(onSubmit, () => trackFailureOnce("validation_error"))}
+                    >
                         <Box className="form">
                             <Box className="form-block">
                                 <TextField
