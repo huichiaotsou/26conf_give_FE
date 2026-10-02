@@ -5,11 +5,13 @@ interface PaymentSelectProps {
     register: UseFormRegister<any>;
     selectedPayment: string;
     showGooglePay: boolean;
+    onPaymentSelect: (paymentType: string) => void;
 }
 
 
 const PaymentSelect: React.FC<PaymentSelectProps> = (props) => {
-    const { register, selectedPayment, showGooglePay } = props;
+    const { register, selectedPayment, showGooglePay, onPaymentSelect } = props;
+    const paymentTypeRegistration = register("paymentType");
     const paymentOptions = [
         { label: "Apple Pay", value: "apple-pay" },
     ];
@@ -21,7 +23,11 @@ const PaymentSelect: React.FC<PaymentSelectProps> = (props) => {
     return (
         <Select
             displayEmpty
-            {...register("paymentType")}
+            {...paymentTypeRegistration}
+            onChange={(event) => {
+                paymentTypeRegistration.onChange(event);
+                onPaymentSelect(event.target.value);
+            }}
             defaultValue={selectedPayment}
             className="payment-method width100 basic-formControl"
             renderValue={(selected) => {

@@ -16,6 +16,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ConfNoteDialog from "./ConfNoteDialog";
 import ConfGiveProps from "../interface/confGiveProps.model";
 import ConfPrivacyPolicyDialog from "./ConfPrivacyPolicyDialog";
+import { PaymentType, trackAmountSelect, trackGiveFailure, trackGiveStart, trackGiveSubmit, trackGiveSuccess, trackPaymentInfo } from "../analytics/ga";
 
 declare global {
     let TPDirect: any;
@@ -47,6 +48,32 @@ const formatMonthDay = (date: Date) => {
     const day = `${date.getDate()}`.padStart(2, "0");
     return `${month}/${day}`;
 };
+
+const toAnalyticsPaymentType = (paymentType: string | undefined): PaymentType => {
+    switch (paymentType) {
+        case PAYMENT_TYPES.APPLE_PAY:
+            return "apple_pay";
+        case PAYMENT_TYPES.GOOGLE_PAY:
+            return "google_pay";
+        default:
+            return "credit_card";
+    }
+};
+
+const getConfirmedTransactionId = (response: unknown): string | null => {
+    if (!response || typeof response !== "object") return null;
+
+    const result = response as Record<string, unknown>;
+    const candidate = result.transaction_id ?? result.transactionId ?? result.order_id ?? result.orderId ?? result.donation_id ?? result.donationId;
+    if ((typeof candidate !== "string" && typeof candidate !== "number")) return null;
+
+    const transactionId = String(candidate).trim();
+    // Only allow an opaque backend identifier; this also rejects email addresses.
+    return /^\S{1,128}$/.test(transactionId) && !transactionId.includes("@") ? transactionId : null;
+};
+
+const normalizePaymentError = (error: unknown): "gateway_error" | "network_error" =>
+    error instanceof TypeError ? "network_error" : "gateway_error";
 
 const givingClosedAlertTitle = (
     <>
@@ -92,6 +119,12 @@ const CONFGive = () => {
     const [givingLockPasswordDialogOpen, setGivingLockPasswordDialogOpen] = useState(false);
     const [givingLockPasswordInput, setGivingLockPasswordInput] = useState("");
     const [givingLockPasswordError, setGivingLockPasswordError] = useState("");
+    const hasTrackedGiveStart = useRef(false);
+    const amountAtFocus = useRef<number | null>(null);
+    const lastTrackedAmount = useRef<number | null>(null);
+    const lastTrackedPaymentInfo = useRef<string | null>(null);
+    const paymentSubmissionInProgress = useRef(false);
+    const failureTrackedForAttempt = useRef(false);
     const appleMerchantIdRef = useRef<string>(import.meta.env.VITE_APPLE_MERCHANT_ID || '');
     const googleMerchantIdRef = useRef<string>(import.meta.env.VITE_GOOGLE_MERCHANT_ID || '');
     const googlePayFeatureEnabled = `${import.meta.env.VITE_ENABLE_GOOGLE_PAY ?? 'true'}`.toLowerCase() !== 'false';
@@ -115,10 +148,45 @@ const CONFGive = () => {
 
     const handleFocus = () => {
         setIsFocused(true);
+        amountAtFocus.current = Number(getValues("amount"));
+        if (!hasTrackedGiveStart.current) {
+            hasTrackedGiveStart.current = true;
+            trackGiveStart();
+        }
     };
 
     const handleBlur = () => {
         setIsFocused(false);
+    };
+
+    const trackCommittedAmount = () => {
+        const amount = Number(getValues("amount"));
+        const didChangeAmount = amountAtFocus.current !== amount;
+        amountAtFocus.current = null;
+        if (!didChangeAmount || !Number.isFinite(amount) || amount <= 0 || lastTrackedAmount.current === amount) return;
+
+        lastTrackedAmount.current = amount;
+        trackAmountSelect(amount, "custom");
+    };
+
+    const trackPaymentInfoOnce = (amount: number, paymentType: string | undefined) => {
+        const normalizedPaymentType = toAnalyticsPaymentType(paymentType);
+        const selection = `${amount}:${normalizedPaymentType}`;
+        if (lastTrackedPaymentInfo.current === selection) return;
+
+        lastTrackedPaymentInfo.current = selection;
+        trackPaymentInfo(amount, normalizedPaymentType);
+    };
+
+    const trackFailureOnce = (errorType: "payment_declined" | "gateway_error" | "network_error" | "validation_error" | "unknown") => {
+        if (failureTrackedForAttempt.current) return;
+
+        const formValues = getValues();
+        const amount = Number(formValues.amount);
+        if (!Number.isFinite(amount) || amount <= 0) return;
+
+        failureTrackedForAttempt.current = true;
+        trackGiveFailure(amount, toAnalyticsPaymentType(formValues.paymentType), errorType);
     };
 
     const handleOpenGivingLockPassword = () => {
@@ -372,6 +440,7 @@ const CONFGive = () => {
                     console.log(err);
 
                     if (err) {
+                        trackFailureOnce("gateway_error");
                         handleOpenAlert("此裝置不支援 Google Pay", "This device does not support Google Pay");
                         return;
                     };
@@ -406,6 +475,7 @@ const CONFGive = () => {
             TPDirect.card.getPrime((result: any) => {
 
                 if (result.status !== 0) {
+                    trackFailureOnce("payment_declined");
                     document.body.style.backgroundColor = "#EDE6DA";
                     document.querySelector(".wrapper")?.classList.add("successAndFailWrapper");
                     setGiveStatus("fail");
@@ -419,9 +489,17 @@ const CONFGive = () => {
 
     // **傳送至後端 API**
     const postPay = (prime: string) => {
+        if (paymentSubmissionInProgress.current) return;
+        paymentSubmissionInProgress.current = true;
+        failureTrackedForAttempt.current = false;
         setLoading(true);
         console.log("✅ 付款中");
         const paymentApiUrl = import.meta.env.VITE_PAYMENT_API_URL;
+        const formValues = getValues();
+        const amount = Number(formValues.amount ?? watch("amount"));
+        const analyticsPaymentType = toAnalyticsPaymentType(formValues.paymentType);
+        trackPaymentInfoOnce(amount, formValues.paymentType);
+        trackGiveSubmit(amount, analyticsPaymentType);
 
         if (!paymentApiUrl) {
             console.error("❌ 錯誤：未設定 VITE_PAYMENT_API_URL，無法傳送付款請求。");
@@ -429,7 +507,6 @@ const CONFGive = () => {
             return;
         }
 
-        const formValues = getValues();
         const sanitizedCountryCode = (formValues.countryCode || '').toString().replace(/^[+ ]+/, '');
         const phoneCode = sanitizedCountryCode ? `+${sanitizedCountryCode}` : '+886';
         const normalizedPaymentType = (formValues.paymentType || PAYMENT_TYPES.CREDIT_CARD).replace(/-/g, '_');
@@ -438,7 +515,7 @@ const CONFGive = () => {
 
         const payload = {
             prime: prime,
-            amount: Number(formValues.amount ?? watch('amount')),
+            amount,
             cardholder: {
                 name: formValues.name ? formValues.name : "未填寫",
                 email: formValues.email,
@@ -484,10 +561,15 @@ const CONFGive = () => {
             .then((res) => {
                 console.log("✅ 付款成功");
                 if (res.status === 0) {
+                    const transactionId = getConfirmedTransactionId(res);
+                    if (transactionId) {
+                        trackGiveSuccess(transactionId, amount);
+                    }
                     document.body.style.backgroundColor = "#EDE6DA";
                     document.querySelector(".wrapper")?.classList.add("successAndFailWrapper");
                     setGiveStatus("success");
                     setLoading(false);
+                    paymentSubmissionInProgress.current = false;
                     // 滑動到頂端
                     window.scrollTo({
                         top: 0,
@@ -498,20 +580,22 @@ const CONFGive = () => {
                         window.location.href = "https://prayermap.thehope.co/";
                     }, 3000);
                 } else {
-                    setError();
+                    setError("gateway_error");
                 };
             })
             .catch((error) => {
                 console.log("❌ 錯誤：", error);
-                setError();
+                setError(normalizePaymentError(error));
             });
     }
 
     // **設置 錯誤訊息**
-    const setError = () => {
+    const setError = (errorType: "payment_declined" | "gateway_error" | "network_error" | "validation_error" | "unknown" = "unknown") => {
+        trackFailureOnce(errorType);
         document.querySelector(".wrapper")?.classList.add("successAndFailWrapper");
         setGiveStatus("fail");
         setLoading(false);
+        paymentSubmissionInProgress.current = false;
         // 滑動到頂端
         window.scrollTo({
             top: 0,
@@ -631,7 +715,10 @@ const CONFGive = () => {
                                     type="tel"
                                     error={!!errors.amount}
                                     onFocus={handleFocus}
-                                    onBlur={handleBlur}
+                                    onBlur={() => {
+                                        handleBlur();
+                                        trackCommittedAmount();
+                                    }}
                                     helperText={errors.amount?.message}
                                 />
                                 {!isNaN(watch("amount")) && watch("amount") !== null &&
@@ -717,7 +804,10 @@ const CONFGive = () => {
                                     {selectedPayment && (
                                         <PaymentSelect register={register}
                                             selectedPayment={selectedPayment}
-                                            showGooglePay={isGooglePayAvailable}></PaymentSelect>
+                                            showGooglePay={isGooglePayAvailable}
+                                            onPaymentSelect={(paymentType) => {
+                                                trackPaymentInfoOnce(Number(getValues("amount")), paymentType);
+                                            }}></PaymentSelect>
                                     )}
                                     <CreditCard paymentType={watch("paymentType")}
                                         register={register}
