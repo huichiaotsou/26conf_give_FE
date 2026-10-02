@@ -3,12 +3,10 @@ import { Button } from "@mui/material";
 const GiveSucessOrFail = ({ giveStatus }: { giveStatus: string }) => {
     return (
         <div className="success">
-            {giveStatus === "fail"
-                ? <img loading="lazy" src="/images/fail.webp" alt="fail" />
-                : <img loading="lazy" src="/images/success.webp" alt="success" />}
+            {giveStatus === "fail" && <img loading="lazy" src="/images/fail.webp" alt="fail" />}
             <div>
                 <p className="success-title text-zh">{giveStatus === "fail" ? "奉獻失敗" : "奉獻完成"}</p>
-                <p className="success-title-english">{giveStatus === "fail" ? "FAILED" : "SUCCESS!"}</p>
+                <p className="success-title-english">{giveStatus === "fail" ? "FAILED" : "SUCCESS"}</p>
             </div>
             <div>
                 {giveStatus === "fail" ?
@@ -38,15 +36,11 @@ const GiveSucessOrFail = ({ giveStatus }: { giveStatus: string }) => {
                     :
                     <>
                         <p className="note-chinese">
-                            謝謝你的慷慨奉獻，與我們一起建造這個家！<br></br>
-                            如有任何疑問，請來信 <a href="mailto:give@thehope.co">give@thehope.co</a>
+                            謝謝你的慷慨奉獻，與我們一起建造這個家！<br></br><br></br>
+                            分享福音，其實不用想著要帶很多人來。主，再給我一個：一個我可以為他禱告的人，一個我願意多走一步的人。<br></br><br></br>
+                            打開禱告地圖，找到他所在的地方，為他留下一段禱告，地圖上就會亮起一盞燈。世界各地的 The Hope 家人看見那盞燈，會一起為你的 One More 禱告，也為你禱告。
                         </p>
-                        <p className="note-english">
-                            Thank you for your generosity in building this<br></br>
-                            home with us!<br></br>
-                            If you have any questions, please feel free to <br></br>
-                            contact us at <a href="mailto:give@thehope.co">give@thehope.co</a>
-                        </p>
+                        <p className="note-english">Thank you for your generousity in building this home with us</p>
                     </>
                 }
             </div>
@@ -67,8 +61,7 @@ const GiveSucessOrFail = ({ giveStatus }: { giveStatus: string }) => {
                     </>
                     :
                     <>
-                        <span className="text-en">BACK TO HOME</span>
-                        {/* <span className="text-zh"> 返回首頁</span> */}
+                        <span className="text-zh">現在就為你的 One More 禱告 🙏</span>
                     </>
                 }
             </Button>

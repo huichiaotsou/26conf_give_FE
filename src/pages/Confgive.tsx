@@ -484,7 +484,7 @@ const CONFGive = () => {
             .then((res) => {
                 console.log("✅ 付款成功");
                 if (res.status === 0) {
-                    document.body.style.backgroundColor = "#F1D984";
+                    document.body.style.backgroundColor = "#EDE6DA";
                     document.querySelector(".wrapper")?.classList.add("successAndFailWrapper");
                     setGiveStatus("success");
                     setLoading(false);
