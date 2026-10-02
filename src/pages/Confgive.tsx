@@ -275,8 +275,7 @@ const CONFGive = () => {
             console.warn("Apple Pay merchant identifier is missing. Apple Pay will be disabled until it is configured.");
         }
 
-        const isAndroid = navigator.userAgent.toLowerCase().includes("android");
-        if (isGooglePayConfigured && isAndroid) {
+        if (isGooglePayConfigured) {
             const googlePaySetting = {
                 googleMerchantId: googleMerchantId,
                 allowedCardAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
@@ -298,12 +297,15 @@ const CONFGive = () => {
             }
         }
         const ua = navigator.userAgent.toLowerCase();
+        const android = ua.includes("android");
         const iOS = /iphone|ipad|ipod/.test(ua);
 
         let defaultPayment = PAYMENT_TYPES.CREDIT_CARD;
 
         if (iOS && isApplePayConfigured) {
             defaultPayment = PAYMENT_TYPES.APPLE_PAY;
+        } else if (android && isGooglePayConfigured) {
+            defaultPayment = PAYMENT_TYPES.GOOGLE_PAY;
         }
 
         setSelectedPayment(defaultPayment);
