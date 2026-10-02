@@ -681,8 +681,10 @@ const CONFGive = () => {
 
     return (
         <div>
-            <Header titleHeight={titleHeight} setTitleHeight={setTitleHeight} giveStatus={giveStatus} ></Header>
-            <div className="wrapper"
+            {giveStatus !== "success" && (
+                <Header titleHeight={titleHeight} setTitleHeight={setTitleHeight} giveStatus={giveStatus} />
+            )}
+            <div className={`wrapper ${giveStatus === "success" ? "successWrapper" : ""}`}
                 style={{ marginTop: wrapperMarginTop }}>
                 {(giveStatus === "success" || giveStatus === "fail") && (
                     <GiveSucessOrFail giveStatus={giveStatus}></GiveSucessOrFail>

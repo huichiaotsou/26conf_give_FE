@@ -1054,6 +1054,15 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     padding: 0 10px;
 }
 
+.successWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-height: 100dvh;
+    padding: 0 10px;
+}
+
 .m-t-8 {
     margin-top: 8px !important;
 }
