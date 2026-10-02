@@ -3,46 +3,34 @@ $tablet: "(max-width: 1032px)";
 $mobile: "(max-width: 599px)"; // 小於 600px 都視為 mobile
 $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
-@import url(//fonts.googleapis.com/earlyaccess/notosanstc.css);
-
 @font-face {
     font-family: 'Gotham-Black';
-    src: url('/fonts/Gotham-Black.woff2') format('woff2')
+    src: url('/fonts/Gotham-Black.woff2') format('woff2');
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Gotham-Thin';
-    src: url('/fonts/Gotham-Thin.woff2') format('woff2')
+    src: url('/fonts/Gotham-Thin.woff2') format('woff2');
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Gotham-Light';
-    src: url('/fonts/Gotham-Light.ttf') format('truetype');
-}
-
-@font-face {
-    font-family: 'Ade';
-    src: url('/fonts/Ade-Display.woff2') format('woff2')
+    src: url('/fonts/Gotham-Light.woff2') format('woff2');
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Roboto';
-    src: url('/fonts/Roboto.woff2') format('woff2')
+    src: url('/fonts/Roboto.woff2') format('woff2');
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Noto Sans';
-    src: url('/fonts/Noto-Sans.woff2') format('woff2')
-}
-
-@font-face {
-    font-family: 'PP Right Serif Mono Dark';
-    src: url('/fonts/PPRightSerifMono-Dark.otf') format('opentype');
-}
-
-@font-face {
-    font-family: 'Title Noto Sans TC';
-    src: url('/fonts/NotoSansTC-SemiBold.ttf') format('truetype');
+    src: url('/fonts/Noto-Sans.woff2') format('woff2');
+    font-display: swap;
 }
 
 @media #{$mobile} {
@@ -99,13 +87,12 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     background-clip: padding-box;
 
     // **根據螢幕大小切換背景圖片**
-    @media #{$pc},
-    #{$tablet} {
+    @media #{$pc} {
         background-image: url('/images/pc-banner-middle-size-1032x536.png');
     }
 
     @media #{$tablet} {
-        background-image: url('/images/pc-banner-large-size-1553x536.png');
+        background-image: url('/images/pc-banner-middle-size-1032x536.png');
     }
 
     @media #{$mobile} {

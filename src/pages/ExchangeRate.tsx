@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import ConfAlertDialog from "./ConfAlertDialog";
+import { lazy, Suspense, useEffect, useState } from "react";
+
+const ConfAlertDialog = lazy(() => import("./ConfAlertDialog"));
 
 const API_URL = "https://api.exchangerate-api.com/v4/latest/TWD";
 
@@ -51,13 +52,17 @@ const ExchangeRate = (amount: { value: number }) => {
                     <p className="m-r-3 font-gotham-light">Equals {(amount.value * data?.rates?.USD).toFixed(2)} USD </p>
                     <p className="disclaimer font-gotham-light" onClick={handleOpenAlert}>Disclaimer</p>
                 </>}
-            <ConfAlertDialog
-                open={alertOpen}
-                title="Disclaimer"
-                message='All exchange rates are reference rates only, the real time exchange rate will be confirmed upon transaction.'
-                enMessage=''
-                onClose={handleCloseAlert}
-                cancelText="CLOSE"></ConfAlertDialog>
+            {alertOpen && (
+                <Suspense fallback={null}>
+                    <ConfAlertDialog
+                        open
+                        title="Disclaimer"
+                        message='All exchange rates are reference rates only, the real time exchange rate will be confirmed upon transaction.'
+                        enMessage=''
+                        onClose={handleCloseAlert}
+                        cancelText="CLOSE" />
+                </Suspense>
+            )}
         </div>
     )
 };

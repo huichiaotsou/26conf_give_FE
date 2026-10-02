@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, ReactNode, FormEvent } from "react";
+import { lazy, Suspense, useEffect, useState, useRef, ReactNode, FormEvent } from "react";
 import { TextField, InputAdornment, Box, Checkbox, FormControlLabel, FormControl, FormHelperText, Dialog, DialogActions, DialogContent, Button } from "@mui/material";
 import CreditCard from "./CreditCard";
 import ExchangeRate from "./ExchangeRate";
@@ -6,21 +6,38 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import "./Congive.scss";
 import Header from "./Header";
 import { COLLAPSED_HEIGHT_RATIO, TITLE_MAX_HEIGHT, getResponsiveTitleMetrics, useIsMobileViewport } from "./bannerMetrics";
-import GiveSucessOrFail from "./GiveSucessOrFail";
-import ConfAlertDialog from "./ConfAlertDialog";
 import PaymentSelect from "./PaymentSelect";
 import Receipt from "./Receipt";
 import Upload from "./Upload";
 import PayButton from "./PayButton";
 import CircularProgress from "@mui/material/CircularProgress";
-import ConfNoteDialog from "./ConfNoteDialog";
 import ConfGiveProps from "../interface/confGiveProps.model";
-import ConfPrivacyPolicyDialog from "./ConfPrivacyPolicyDialog";
 import { PaymentType, trackAmountSelect, trackGiveFailure, trackGiveStart, trackGiveSubmit, trackGiveSuccess, trackPaymentInfo } from "../analytics/ga";
 
 declare global {
     let TPDirect: any;
 }
+
+const GiveSucessOrFail = lazy(() => import("./GiveSucessOrFail"));
+const ConfAlertDialog = lazy(() => import("./ConfAlertDialog"));
+const ConfNoteDialog = lazy(() => import("./ConfNoteDialog"));
+const ConfPrivacyPolicyDialog = lazy(() => import("./ConfPrivacyPolicyDialog"));
+const googlePayScriptId = "google-pay-sdk";
+
+const loadGooglePaySdk = () => new Promise<void>((resolve, reject) => {
+    if (document.getElementById(googlePayScriptId)) {
+        resolve();
+        return;
+    }
+
+    const script = document.createElement("script");
+    script.id = googlePayScriptId;
+    script.src = "https://pay.google.com/gp/p/js/pay.js";
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Unable to load Google Pay SDK"));
+    document.head.appendChild(script);
+});
 
 const PAYMENT_TYPES = {
     APPLE_PAY: "apple-pay",
@@ -128,7 +145,7 @@ const CONFGive = () => {
     const appleMerchantIdRef = useRef<string>(import.meta.env.VITE_APPLE_MERCHANT_ID || '');
     const googleMerchantIdRef = useRef<string>(import.meta.env.VITE_GOOGLE_MERCHANT_ID || '');
     const googlePayFeatureEnabled = `${import.meta.env.VITE_ENABLE_GOOGLE_PAY ?? 'true'}`.toLowerCase() !== 'false';
-    const isGooglePayAvailable = Boolean(googleMerchantIdRef.current) && googlePayFeatureEnabled;
+    const [isGooglePayAvailable, setIsGooglePayAvailable] = useState(false);
     const givingLockPassword = `${import.meta.env.VITE_GIVING_LOCK_PASSWORD ?? ''}`.trim();
     const appEnv = `${import.meta.env.VITE_APP_ENV ?? 'production'}`.toLowerCase();
     const isProductionEnvironment = appEnv === 'production';
@@ -258,13 +275,21 @@ const CONFGive = () => {
             console.warn("Apple Pay merchant identifier is missing. Apple Pay will be disabled until it is configured.");
         }
 
-        if (isGooglePayConfigured) {
+        const isAndroid = navigator.userAgent.toLowerCase().includes("android");
+        if (isGooglePayConfigured && isAndroid) {
             const googlePaySetting = {
                 googleMerchantId: googleMerchantId,
                 allowedCardAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
                 merchantName: "The Hope",
             }
-            TPDirect.googlePay.setupGooglePay(googlePaySetting);
+            loadGooglePaySdk()
+                .then(() => {
+                    TPDirect.googlePay.setupGooglePay(googlePaySetting);
+                    setIsGooglePayAvailable(true);
+                })
+                .catch(() => {
+                    console.warn("Google Pay SDK failed to load. Google Pay will be unavailable.");
+                });
         } else {
             if (!googlePayFeatureEnabled && googleMerchantId) {
                 console.warn("Google Pay is disabled via VITE_ENABLE_GOOGLE_PAY.");
@@ -273,15 +298,12 @@ const CONFGive = () => {
             }
         }
         const ua = navigator.userAgent.toLowerCase();
-        const android = ua.includes("android");
         const iOS = /iphone|ipad|ipod/.test(ua);
 
         let defaultPayment = PAYMENT_TYPES.CREDIT_CARD;
 
         if (iOS && isApplePayConfigured) {
             defaultPayment = PAYMENT_TYPES.APPLE_PAY;
-        } else if (android && isGooglePayConfigured) {
-            defaultPayment = PAYMENT_TYPES.GOOGLE_PAY;
         }
 
         setSelectedPayment(defaultPayment);
@@ -687,7 +709,9 @@ const CONFGive = () => {
             <div className={`wrapper ${giveStatus === "success" ? "successWrapper" : ""}`}
                 style={{ marginTop: wrapperMarginTop }}>
                 {(giveStatus === "success" || giveStatus === "fail") && (
-                    <GiveSucessOrFail giveStatus={giveStatus}></GiveSucessOrFail>
+                    <Suspense fallback={null}>
+                        <GiveSucessOrFail giveStatus={giveStatus} />
+                    </Suspense>
                 )}
                 {giveStatus === "form" && (
                     <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
@@ -880,27 +904,39 @@ const CONFGive = () => {
                         </Box>
                     </form>
                 )}
-                <ConfAlertDialog
-                    open={alertOpen}
-                    title={alertTitle}
-                    message={message}
-                    enMessage={enMessage}
-                    onClose={handleCloseAlert}
-                    cancelText="CLOSE"></ConfAlertDialog>
-                <ConfNoteDialog
-                    open={addNoteDialogOpen}
-                    register={register}
-                    errors={errors}
-                    onClose={handleCloseAddNote}
-                    onConfirm={handleConfirmAddNote}
-                    noteLength={watch('note').length}
-                ></ConfNoteDialog>
-                <ConfPrivacyPolicyDialog
-                    open={privacyPolicyDialogOpen}
-                    title={<><span className="text-en">The Hope </span><span className="text-zh">教會個人資料使用與隱私政策同意條款</span></>}
-                    cancelText="CLOSE"
-                    onClose={handleClosePrivacyPolicy}
-                ></ConfPrivacyPolicyDialog>
+                {alertOpen && (
+                    <Suspense fallback={null}>
+                        <ConfAlertDialog
+                            open
+                            title={alertTitle}
+                            message={message}
+                            enMessage={enMessage}
+                            onClose={handleCloseAlert}
+                            cancelText="CLOSE" />
+                    </Suspense>
+                )}
+                {addNoteDialogOpen && (
+                    <Suspense fallback={null}>
+                        <ConfNoteDialog
+                            open
+                            register={register}
+                            errors={errors}
+                            onClose={handleCloseAddNote}
+                            onConfirm={handleConfirmAddNote}
+                            noteLength={watch('note').length}
+                        />
+                    </Suspense>
+                )}
+                {privacyPolicyDialogOpen && (
+                    <Suspense fallback={null}>
+                        <ConfPrivacyPolicyDialog
+                            open
+                            title={<><span className="text-en">The Hope </span><span className="text-zh">教會個人資料使用與隱私政策同意條款</span></>}
+                            cancelText="CLOSE"
+                            onClose={handleClosePrivacyPolicy}
+                        />
+                    </Suspense>
+                )}
                 {loading && (
                     <Box className="loading">
                         <CircularProgress className="loading-icon" />
