@@ -237,6 +237,201 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                 max-width: 390px;
             }
 
+            .giving-method-toggle {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                padding: 4px;
+                margin-bottom: 24px;
+                border-radius: 8px;
+                background: rgba(0, 0, 7, 0.08);
+
+                .giving-method-button {
+                    min-height: 48px;
+                    border-radius: 4px;
+                    color: #000007;
+                    font-family: 'Roboto';
+                    font-size: 14px;
+                    font-weight: 500;
+                    text-transform: none;
+
+                    &.active {
+                        background: #FFFFFF;
+                        font-weight: 700;
+                    }
+                }
+            }
+
+            .wire-transfer {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+
+                .wire-transfer-heading {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding: 16px 0 12px;
+                    text-align: center;
+
+                    .wire-transfer-icon {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 64px;
+                        height: 64px;
+                        margin-bottom: 12px;
+                        border-radius: 50%;
+                        background: #FFFFFF;
+
+                        svg {
+                            width: 30px;
+                            height: 30px;
+                            stroke-width: 1.75;
+                        }
+                    }
+
+                    h2, p {
+                        margin: 0;
+                    }
+
+                    h2 {
+                        font-family: 'Roboto';
+                        font-size: 20px;
+                        font-weight: 700;
+                    }
+
+                    p {
+                        max-width: 280px;
+                        margin-top: 6px;
+                        font-family: 'Roboto';
+                        font-size: 12px;
+                        line-height: 18px;
+                    }
+                }
+
+                .wire-transfer-details {
+                    overflow: hidden;
+                    border-radius: 8px;
+                    background: #FFFFFF;
+
+                    summary {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 14px 16px;
+                        cursor: pointer;
+                        font-family: 'Roboto';
+                        font-size: 14px;
+                        font-weight: 700;
+                        list-style: none;
+
+                        &::-webkit-details-marker {
+                            display: none;
+                        }
+
+                        span {
+                            font-size: 20px;
+                            font-weight: 300;
+                            transition: transform .2s ease;
+                        }
+                    }
+
+                    &[open] summary span {
+                        transform: rotate(45deg);
+                    }
+
+                    .wire-transfer-content {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                        padding: 16px;
+                        border-top: 1px solid rgba(0, 0, 7, .08);
+
+                        p {
+                            display: flex;
+                            align-items: flex-start;
+                            margin: 0;
+                            font-family: 'Roboto';
+                            font-size: 14px;
+                            line-height: 20px;
+
+                            > span {
+                                flex: 0 0 80px;
+                                color: rgba(0, 0, 7, .6);
+                                font-weight: 400;
+                            }
+
+                            strong {
+                                font-weight: 700;
+                            }
+                        }
+
+                        &.wire-transfer-foreign p > span {
+                            flex-basis: 96px;
+                        }
+
+                        .wire-copy-button {
+                            min-width: auto;
+                            min-height: auto;
+                            margin-left: 8px;
+                            padding: 4px;
+                            border-radius: 50%;
+                            background: transparent;
+                            color: #000007;
+                            text-transform: none;
+
+                            svg {
+                                width: 16px;
+                                height: 16px;
+                                stroke-width: 1.8;
+                            }
+
+                            &:hover {
+                                background: rgba(0, 0, 7, .08);
+                            }
+                        }
+                    }
+                }
+
+                .wire-transfer-notice {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    margin-top: 4px;
+                    padding: 20px;
+                    border: 1px solid rgba(255, 160, 31, .35);
+                    border-radius: 16px;
+                    background: rgba(255, 249, 229, .72);
+                    text-align: center;
+
+                    p {
+                        margin: 0;
+                        font-family: 'Roboto';
+                        font-size: 12px;
+                        font-weight: 500;
+                        line-height: 18px;
+                    }
+
+                    .wire-transfer-form-button {
+                        width: 192px;
+                        margin-top: 16px;
+                        padding: 12px;
+                        border-radius: 999px;
+                        background: #FFA01F;
+                        color: #000007;
+                        font-family: 'Roboto';
+                        font-size: 14px;
+                        font-weight: 700;
+                        text-transform: none;
+
+                        &:hover {
+                            background: #FFA01F;
+                        }
+                    }
+                }
+            }
+
             .basic-formControl {
                 border-radius: 4px;
                 font-family: 'Roboto';

@@ -10,6 +10,7 @@ import PaymentSelect from "./PaymentSelect";
 import Receipt from "./Receipt";
 import Upload from "./Upload";
 import PayButton from "./PayButton";
+import WireTransfer from "./WireTransfer";
 import CircularProgress from "@mui/material/CircularProgress";
 import ConfGiveProps from "../interface/confGiveProps.model";
 import { PaymentType, trackAmountSelect, trackGiveFailure, trackGiveStart, trackGiveSubmit, trackGiveSuccess, trackPaymentInfo } from "../analytics/ga";
@@ -125,6 +126,7 @@ const CONFGive = () => {
     const [receiptType, setReceiptType] = useState<string>(RECEIPT_TYPES.PERSONAL);
     const [isFocused, setIsFocused] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState("");
+    const [givingMethod, setGivingMethod] = useState<"online" | "wire">("online");
     const [creditCardStatus, setCreditCardStatus] = useState({
         number: '',
         expiry: '',
@@ -720,13 +722,30 @@ const CONFGive = () => {
                     </Suspense>
                 )}
                 {giveStatus === "form" && (
-                    <form
-                        autoComplete="off"
-                        onFocusCapture={trackGiveStartOnce}
-                        onSubmit={handleSubmit(onSubmit, () => trackFailureOnce("validation_error"))}
-                    >
-                        <Box className="form">
-                            <Box className="form-block">
+                    <Box className="form">
+                        <Box className="form-block">
+                            <Box className="giving-method-toggle">
+                                <Button
+                                    type="button"
+                                    className={givingMethod === "online" ? "giving-method-button active" : "giving-method-button"}
+                                    onClick={() => setGivingMethod("online")}
+                                >
+                                    信用卡 / 行動支付
+                                </Button>
+                                <Button
+                                    type="button"
+                                    className={givingMethod === "wire" ? "giving-method-button active" : "giving-method-button"}
+                                    onClick={() => setGivingMethod("wire")}
+                                >
+                                    國內外銀行匯款
+                                </Button>
+                            </Box>
+                            {givingMethod === "wire" ? <WireTransfer /> : (
+                            <form
+                                autoComplete="off"
+                                onFocusCapture={trackGiveStartOnce}
+                                onSubmit={handleSubmit(onSubmit, () => trackFailureOnce("validation_error"))}
+                            >
                                 <TextField
                                     {...register("amount", {
                                         valueAsNumber: true,
@@ -910,9 +929,10 @@ const CONFGive = () => {
                                         disabled={!canGive}
                                         disabledMessage={!canGive ? givingClosedMessage : ''}></PayButton>
                                 </Box>
-                            </Box>
+                            </form>
+                            )}
                         </Box>
-                    </form>
+                    </Box>
                 )}
                 {alertOpen && (
                     <Suspense fallback={null}>
