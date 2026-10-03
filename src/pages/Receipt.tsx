@@ -6,12 +6,14 @@ interface ReceiptProps {
     receiptType: string;
     register: UseFormRegister<any>;
     errors: FieldErrors<any>;
+    onCampusChange: () => void;
 }
 
 const BRANCH_OPTIONS = ["台北分部", "線上分部", "台中分部", "其他"];
 
 const Receipt: React.FC<ReceiptProps> = (props) => {
-    const { register, errors, setReceiptType, receiptType } = props;
+    const { register, errors, setReceiptType, receiptType, onCampusChange } = props;
+    const campusRegistration = register("campus");
 
     // 統一編號的檢查碼驗證規則
     const taxIDNumberPattern = (value: any) => {
@@ -74,7 +76,11 @@ const Receipt: React.FC<ReceiptProps> = (props) => {
                     select
                     SelectProps={{ native: true }}
                     className="branch-select width100 basic-formControl"
-                    {...register("campus")}
+                    {...campusRegistration}
+                    onChange={(event) => {
+                        campusRegistration.onChange(event);
+                        onCampusChange();
+                    }}
                 >
                     {BRANCH_OPTIONS.map((option) => (
                         <option key={option} value={option}>{option}</option>

@@ -144,6 +144,7 @@ const CONFGive = () => {
     const lastTrackedPaymentInfo = useRef<string | null>(null);
     const paymentSubmissionInProgress = useRef(false);
     const failureTrackedForAttempt = useRef(false);
+    const campusSelectedManually = useRef(false);
     const appleMerchantIdRef = useRef<string>(import.meta.env.VITE_APPLE_MERCHANT_ID || '');
     const googleMerchantIdRef = useRef<string>(import.meta.env.VITE_GOOGLE_MERCHANT_ID || '');
     const googlePayFeatureEnabled = `${import.meta.env.VITE_ENABLE_GOOGLE_PAY ?? 'true'}`.toLowerCase() !== 'false';
@@ -321,6 +322,32 @@ const CONFGive = () => {
     useEffect(() => {
         TPDirectCardOnUpdate();
     }, []);
+
+    useEffect(() => {
+        const paymentApiUrl = import.meta.env.VITE_PAYMENT_API_URL;
+        if (!paymentApiUrl) return;
+
+        const suggestionUrl = paymentApiUrl.replace(/\/payment(?:\?.*)?$/, "/campus-suggestion");
+        if (suggestionUrl === paymentApiUrl) return;
+
+        const controller = new AbortController();
+        fetch(suggestionUrl, { signal: controller.signal })
+            .then((response) => response.ok ? response.json() : null)
+            .then((result) => {
+                const campus = result?.campus;
+                if (
+                    !campusSelectedManually.current &&
+                    ["台北分部", "台中分部", "線上分部"].includes(campus)
+                ) {
+                    setValue("campus", campus, { shouldValidate: true });
+                }
+            })
+            .catch(() => {
+                // Campus selection remains on the default if location lookup is unavailable.
+            });
+
+        return () => controller.abort();
+    }, [setValue]);
 
 
     useEffect(() => {
@@ -851,7 +878,10 @@ const CONFGive = () => {
                                     <Receipt setReceiptType={setReceiptType}
                                         receiptType={receiptType}
                                         register={register}
-                                        errors={errors}></Receipt>
+                                        errors={errors}
+                                        onCampusChange={() => {
+                                            campusSelectedManually.current = true;
+                                        }}></Receipt>
                                     <Upload receiptType={receiptType}
                                         upload={watch("upload")}
                                         register={register}
