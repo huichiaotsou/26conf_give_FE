@@ -12,13 +12,10 @@ interface PurchaseItem {
 
 declare global {
     interface Window {
-        dataLayer?: unknown[][];
         gtag?: (...args: unknown[]) => void;
-        __givingGaInitialized?: boolean;
     }
 }
 
-const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID?.trim();
 const isProduction = import.meta.env.PROD && `${import.meta.env.VITE_APP_ENV ?? "production"}`.toLowerCase() === "production";
 const purchaseStoragePrefix = "giving-ga-purchase:";
 const emittedPurchases = new Set<string>();
@@ -34,34 +31,7 @@ const donationItems = (amount: number): readonly PurchaseItem[] => [{
 const canTrack = () =>
     typeof window !== "undefined" &&
     isProduction &&
-    Boolean(measurementId) &&
     typeof window.gtag === "function";
-
-/** Loads the official Google tag once. This is intentionally a browser-only no-op otherwise. */
-export const initializeGA = () => {
-    if (typeof window === "undefined" || !isProduction || !measurementId || window.__givingGaInitialized) {
-        return;
-    }
-
-    try {
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = window.gtag || ((...args: unknown[]) => window.dataLayer?.push(args));
-        window.gtag("js", new Date());
-        window.gtag("config", measurementId);
-        window.__givingGaInitialized = true;
-
-        const scriptId = "giving-ga4-script";
-        if (!document.getElementById(scriptId)) {
-            const script = document.createElement("script");
-            script.id = scriptId;
-            script.async = true;
-            script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
-            document.head.appendChild(script);
-        }
-    } catch {
-        // Analytics must never affect the donation flow (including when blocked).
-    }
-};
 
 export const trackEvent = (name: string, parameters: EventParameters = {}) => {
     if (!canTrack()) return;

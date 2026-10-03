@@ -19,7 +19,6 @@ export default defineConfig({
         VITE_GIVING_START_AT: '',
         VITE_GIVING_END_AT: '',
         VITE_GIVING_LOCK_PASSWORD: '',
-        VITE_GA_MEASUREMENT_ID: '',
       },
       { defineOn: 'import.meta.env' }
     ),
