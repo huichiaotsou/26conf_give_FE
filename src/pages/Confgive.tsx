@@ -93,6 +93,21 @@ const getConfirmedTransactionId = (response: unknown): string | null => {
 const normalizePaymentError = (error: unknown): "gateway_error" | "network_error" =>
     error instanceof TypeError ? "network_error" : "gateway_error";
 
+const campusFromApproximateLocation = (location: {
+    country_code?: string;
+    city?: string;
+    region?: string;
+}) => {
+    const cityAndRegion = `${location.city || ""} ${location.region || ""}`.toLowerCase();
+    const isTaipeiMetroArea = location.country_code === "TW" && (
+        cityAndRegion.includes("taipei") ||
+        cityAndRegion.includes("台北") ||
+        cityAndRegion.includes("新北")
+    );
+
+    return isTaipeiMetroArea ? "台北分部" : "線上分部";
+};
+
 const givingClosedAlertTitle = (
     <>
         <span className="text-zh">尚未開放</span>
@@ -324,19 +339,18 @@ const CONFGive = () => {
     }, []);
 
     useEffect(() => {
-        const paymentApiUrl = import.meta.env.VITE_PAYMENT_API_URL;
-        if (!paymentApiUrl) return;
-
-        const suggestionUrl = paymentApiUrl.replace(/\/payment(?:\?.*)?$/, "/campus-suggestion");
-        if (suggestionUrl === paymentApiUrl) return;
-
         const controller = new AbortController();
-        fetch(suggestionUrl, { signal: controller.signal })
+        fetch("https://ipwho.is/?fields=success,country_code,region,city", {
+            signal: controller.signal,
+            cache: "no-store",
+            referrerPolicy: "no-referrer",
+        })
             .then((response) => response.ok ? response.json() : null)
             .then((result) => {
-                const campus = result?.campus;
+                const campus = result?.success ? campusFromApproximateLocation(result) : null;
                 if (
                     !campusSelectedManually.current &&
+                    campus &&
                     ["台北分部", "台中分部", "線上分部"].includes(campus)
                 ) {
                     setValue("campus", campus, { shouldValidate: true });
