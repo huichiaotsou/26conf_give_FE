@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Box, Button } from "@mui/material";
-import { FiCheck, FiCopy, FiGlobe } from "react-icons/fi";
+import { FiCopy, FiGlobe } from "react-icons/fi";
 
 const CopyButton = ({ text, label }: { text: string; label: string }) => {
     const [copied, setCopied] = useState(false);
@@ -13,7 +13,7 @@ const CopyButton = ({ text, label }: { text: string; label: string }) => {
 
     return (
         <Button className="wire-copy-button" type="button" onClick={copy} aria-label={`複製${label}`} title={`複製${label}`}>
-            {copied ? <FiCheck /> : <FiCopy />}
+            {copied ? <span>已複製</span> : <FiCopy />}
         </Button>
     );
 };

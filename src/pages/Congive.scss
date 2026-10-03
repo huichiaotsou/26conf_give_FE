@@ -387,6 +387,13 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                                 stroke-width: 1.8;
                             }
 
+                            span {
+                                font-family: 'Roboto';
+                                font-size: 11px;
+                                font-weight: 700;
+                                line-height: 16px;
+                            }
+
                             &:hover {
                                 background: rgba(0, 0, 7, .08);
                             }
