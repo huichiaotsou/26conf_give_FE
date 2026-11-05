@@ -19,7 +19,7 @@ export const getResponsiveTitleMetrics = (isMobile: boolean) => {
         titleMaxHeight: Math.round(TITLE_MAX_HEIGHT * ratio),
         titleMinHeight: Math.round(TITLE_MIN_HEIGHT * ratio),
         titleCollapseThreshold: Math.round(TITLE_COLLAPSE_THRESHOLD * ratio),
-        collapsedMinHeight: Math.round(COLLAPSED_MIN_HEIGHT * ratio),
+        collapsedMinHeight: Math.round(COLLAPSED_MIN_HEIGHT * (isMobile ? ratio : 0.68)),
         collapsedTopOffset: Math.round(COLLAPSED_TOP_OFFSET * ratio),
         resultViewHeight: Math.round(TITLE_MAX_HEIGHT * RESULT_VIEW_HEIGHT_RATIO * ratio),
     };

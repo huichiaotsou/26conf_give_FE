@@ -92,15 +92,17 @@ const Receipt: React.FC<ReceiptProps> = (props) => {
                     <p className="label-chinese text-zh">開立奉獻收據資訊</p>
                     <p className="label-english text-en font-gotham-light">Information for Issuing Offering Receipts</p>
                 </div>
-                <div>
+                <div className="giving-method-toggle receipt-type-toggle">
                     <Button
+                        type="button"
                         onClick={() => setReceiptType('personal')}
-                        className={`personal-company-button glass-button ${receiptType === "personal" ? "clicked" : "not-clicked"}`}
+                        className={`giving-method-button ${receiptType === "personal" ? "active" : ""}`}
                     >個人</Button>
                     <Button
+                        type="button"
                         onClick={() => setReceiptType('company')}
-                        className={`personal-company-button glass-button ${receiptType === "company" ? "clicked" : "not-clicked"}`}
-                    >企業</Button>
+                        className={`giving-method-button ${receiptType === "company" ? "active" : ""}`}
+                    >公司行號</Button>
                 </div>
                 {receiptType === "personal" && (
                     <div>
@@ -123,7 +125,7 @@ const Receipt: React.FC<ReceiptProps> = (props) => {
                 receiptType === "company" && (
                     <div className="company-tax-block">
                         <div>
-                            <p className="label-chinese text-zh">企業登記全名</p>
+                            <p className="label-chinese text-zh">公司登記全名</p>
                             <p className="label-english text-en">Company's Registered Name</p>
                             <TextField
                                 id="outlined-required"

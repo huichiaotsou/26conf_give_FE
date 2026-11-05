@@ -23,7 +23,7 @@ const PayButton: React.FC<PayButtonProps> = (props) => {
                         disabled={disabled}
                         className="continue-button glass-button glass-button-accent width100">
                         <span className="text-en">CONTINUE</span>
-                        <span className="text-zh"> 下一步</span>
+                        <span className="text-zh">下一步</span>
                     </Button>
                     {disabledMessage && (
                         <p className="payment-disabled-message text-zh">{disabledMessage}</p>

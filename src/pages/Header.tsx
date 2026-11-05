@@ -53,7 +53,8 @@ const Header = ({ titleHeight, setTitleHeight, giveStatus }: HeaderProps) => {
     const isResultView = !isFormView;
     const showFullBanner = isResultView || titleHeight > titleCollapseThreshold;
     const isCollapsed = isFormView && !showFullBanner;
-    const collapsedHeight = Math.max(collapsedMinHeight, titleMinHeight * COLLAPSED_HEIGHT_RATIO, titleHeight * COLLAPSED_HEIGHT_RATIO);
+    const collapsedHeightRatio = isMobile ? COLLAPSED_HEIGHT_RATIO : COLLAPSED_HEIGHT_RATIO * 0.8;
+    const collapsedHeight = Math.max(collapsedMinHeight, titleMinHeight * collapsedHeightRatio, titleHeight * collapsedHeightRatio);
     const displayedHeight = isFormView ? (showFullBanner ? titleHeight : collapsedHeight) : resultViewHeight;
     const collapsedWidthPercent = COLLAPSED_WIDTH_RATIO * 100;
     const titleClasses = [

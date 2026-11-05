@@ -96,7 +96,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     }
 
     @media #{$mobile} {
-        background-image: url('/images/mobile-banner-390x536.png');
+        background-image: url('/images/mobile-banner-780x402.png');
     }
 
     // 液態玻璃的暖色高光
@@ -128,7 +128,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
     &.title-collapsed {
         background-image: none;
-        background-color: rgba(255, 255, 255, 0.08);
+        background-color: rgba(111, 78, 55, 0.72);
         backdrop-filter: blur(3px);
         -webkit-backdrop-filter: blur(3px);
         border-color: rgba(255, 255, 255, 0.35);
@@ -143,7 +143,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         }
 
         &::after {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(111, 78, 55, 0.08);
         }
     }
 
@@ -184,24 +184,24 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
         &.title-logo-floating {
             top: 50%;
-            width: 305px;
+            width: 495.625px;
             transform: translate(-50%, -50%);
         }
 
         &.title-logo-compact {
             top: 50%;
-            width: 130px;
+            width: 265.8708px;
             transform: translate(-50%, -50%);
         }
     }
 
     @media #{$mobile} {
         .title-logo.title-logo-floating {
-            width: 149px;
+            width: 290.55px;
         }
 
         .title-logo.title-logo-compact {
-            width: 78px;
+            width: 159.52495px;
         }
     }
 
@@ -647,48 +647,6 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                     font-size: 16px;
                 }
 
-                .personal-company-button {
-                    text-align: center;
-                    font-family: 'Gotham-Light';
-                    font-size: 14px;
-                    font-style: normal;
-                    font-weight: 500;
-                    line-height: 20px;
-                    letter-spacing: 0.1px;
-                    margin-right: 16px;
-                    width: 80px;
-                    color: #000007;
-                    border-radius: 16px;
-                    border: 1px solid rgba(0, 0, 7, 0.2);
-                    background: transparent;
-                    box-shadow: none;
-                    backdrop-filter: none;
-                    -webkit-backdrop-filter: none;
-                }
-
-                .personal-company-button.clicked {
-                    color: #000007;
-                    background: #FFFFFF;
-                    border-color: #FFFFFF;
-                    box-shadow: none;
-                }
-
-                .personal-company-button.not-clicked {
-                    color: #000007;
-                    border: 1px solid rgba(0, 0, 7, 0.2);
-                    background: transparent;
-                    box-shadow: none;
-                }
-
-                .personal-company-button:hover {
-                    box-shadow: none;
-                    background: transparent;
-                }
-
-                .personal-company-button.clicked:hover {
-                    background: #FFFFFF;
-                }
-
                 .receiptName {
                     margin: 8px 0;
                 }
@@ -921,8 +879,8 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     .continue-button {
         font-weight: 600;
         border-radius: 32px;
-        background: #E63C23;
-        border: 1px solid #E63C23;
+        background: #6f4e37;
+        border: 1px solid #6f4e37;
         box-shadow: none;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
@@ -936,13 +894,17 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         color: #EDE6DA !important;
     }
 
+    .continue-button .text-zh {
+        margin-left: 0.35em;
+    }
+
     .continue-button:hover {
-        background: #E63C23;
+        background: #6f4e37;
         box-shadow: none;
     }
 
     .continue-button.Mui-disabled {
-        background: #E63C23;
+        background: #6f4e37;
         color: #EDE6DA;
         opacity: 0.6;
     }
