@@ -66,7 +66,7 @@ const CreditCard: React.FC<CreditCardProps> = (props) => {
                     />
                 </div>
                 <div>
-                    <p className="label-chinese">Credit Card 信用卡卡號</p>
+                    <p className="label-chinese">信用卡卡號</p>
                     <p className="label-english font-gotham-light">Card Number</p>
                     <div className="tpfield width100" style={!creditCardStatus.number ? { border: "none" } : { border: "1px solid red" }} id="card-number"></div>
                     <p className="valid-text">{creditCardStatus.number}</p>

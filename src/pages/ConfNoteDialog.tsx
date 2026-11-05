@@ -63,10 +63,10 @@ const ConfNoteDialog: React.FC<AddNoteDialogProps> = ({
                 </p>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} className="dialog-button glass-button font-gotham-light">
+                <Button onClick={onClose} className="dialog-button note-dialog-button note-dialog-cancel font-gotham-light">
                     {cancelText}
                 </Button>
-                <Button onClick={onConfirm} className="dialog-button glass-button glass-button-accent font-gotham-light">
+                <Button onClick={onConfirm} className="dialog-button note-dialog-button note-dialog-save font-gotham-light">
                     {confirmText}
                 </Button>
             </DialogActions>
