@@ -128,7 +128,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
 
     &.title-collapsed {
         background-image: none;
-        background-color: rgba(111, 78, 55, 0.72);
+        background-color: rgba(62, 37, 30, 0.72);
         backdrop-filter: blur(3px);
         -webkit-backdrop-filter: blur(3px);
         border-color: rgba(255, 255, 255, 0.35);
@@ -143,7 +143,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
         }
 
         &::after {
-            background: rgba(111, 78, 55, 0.08);
+            background: rgba(62, 37, 30, 0.08);
         }
     }
 
@@ -425,15 +425,15 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                         margin-top: 16px;
                         padding: 12px;
                         border-radius: 999px;
-                        background: #FFA01F;
-                        color: #000007;
+                        background: #3e251e;
+                        color: #EDE6DA;
                         font-family: 'Roboto';
                         font-size: 14px;
                         font-weight: 700;
                         text-transform: none;
 
                         &:hover {
-                            background: #FFA01F;
+                            background: #3e251e;
                         }
                     }
                 }
@@ -503,7 +503,7 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
                     }
 
                     .MuiOutlinedInput-input:focus {
-                        color: rgb(223, 88, 59);
+                        color: #0f3b59;
                     }
                 }
 
@@ -879,8 +879,8 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     .continue-button {
         font-weight: 600;
         border-radius: 32px;
-        background: #6f4e37;
-        border: 1px solid #6f4e37;
+        background: #3e251e;
+        border: 1px solid #3e251e;
         box-shadow: none;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
@@ -899,12 +899,12 @@ $font-zh: 'Noto Sans TC', '微軟正黑體', sans-serif;
     }
 
     .continue-button:hover {
-        background: #6f4e37;
+        background: #3e251e;
         box-shadow: none;
     }
 
     .continue-button.Mui-disabled {
-        background: #6f4e37;
+        background: #3e251e;
         color: #EDE6DA;
         opacity: 0.6;
     }

@@ -799,7 +799,7 @@ const CONFGive = () => {
                                                 <InputAdornment
                                                     position="start"
                                                     sx={{
-                                                        color: isFocused ? "rgb(223, 88, 59)" : "#000007"
+                                                        color: isFocused ? "#0F3B59" : "#000007"
                                                     }}
                                                 >
                                                     {isFocused}NT$
