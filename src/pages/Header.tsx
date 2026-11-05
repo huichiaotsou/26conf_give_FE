@@ -85,7 +85,7 @@ const Header = ({ titleHeight, setTitleHeight, giveStatus }: HeaderProps) => {
             {isFormView && (
                 <img
                     loading="lazy"
-                    src="/images/logo.png"
+                    src="/images/fwd26-logo.png"
                     alt="The Hope Giving"
                     className={`title-logo ${showFullBanner ? "title-logo-floating" : "title-logo-compact"}`}
                 />

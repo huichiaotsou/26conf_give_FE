@@ -109,15 +109,15 @@ $font-zh: 'Noto Serif TC Bold', serif;
 
     // **根據螢幕大小切換背景圖片**
     @media #{$pc} {
-        background-image: url('/images/pc-banner-middle-size-1032x536.png');
+        background-image: url('/images/fwd26-pc-banner-middle-size-1032x536.png');
     }
 
     @media #{$tablet} {
-        background-image: url('/images/pc-banner-middle-size-1032x536.png');
+        background-image: url('/images/fwd26-pc-banner-middle-size-1032x536.png');
     }
 
     @media #{$mobile} {
-        background-image: url('/images/mobile-banner-780x402.png');
+        background-image: url('/images/fwd26-mobile-banner-780x402.png');
     }
 
     // 液態玻璃的暖色高光
