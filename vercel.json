@@ -1,4 +1,17 @@
 {
+    "redirects": [
+        {
+            "source": "/(.*)",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "confgive.thehope.co"
+                }
+            ],
+            "destination": "https://giving.thehope.co/$1",
+            "permanent": true
+        }
+    ],
     "rewrites": [
         {
             "source": "/.well-known/(.*)",
