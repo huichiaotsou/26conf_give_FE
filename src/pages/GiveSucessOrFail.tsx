@@ -52,7 +52,7 @@ const GiveSucessOrFail = ({ giveStatus }: { giveStatus: string }) => {
                         window.location.href = "/";
                     } else {
                         window.setTimeout(() => {
-                            window.location.href = "https://prayermap.thehope.co/";
+                            window.location.href = "https://forward.thehope.co";
                         }, 5000);
                     };
                 }}>

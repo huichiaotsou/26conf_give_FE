@@ -5,7 +5,7 @@ import ExchangeRate from "./ExchangeRate";
 import { useForm, SubmitHandler } from "react-hook-form";
 import "./Congive.scss";
 import Header from "./Header";
-import { COLLAPSED_HEIGHT_RATIO, TITLE_MAX_HEIGHT, getResponsiveTitleMetrics, useIsMobileViewport } from "./bannerMetrics";
+import { TITLE_MAX_HEIGHT, getCollapsedTitleHeight, getResponsiveTitleMetrics, useIsMobileViewport } from "./bannerMetrics";
 import PaymentSelect from "./PaymentSelect";
 import Receipt from "./Receipt";
 import Upload from "./Upload";
@@ -646,9 +646,9 @@ const CONFGive = () => {
                         top: 0,
                         behavior: "smooth",
                     });
-                    // 3 秒後跳轉至 Prayer Map
+                    // 3 秒後跳轉至 Forward
                     setTimeout(() => {
-                        window.location.href = "https://prayermap.thehope.co/";
+                        window.location.href = "https://forward.thehope.co";
                     }, 3000);
                 } else {
                     setError("gateway_error");
@@ -729,13 +729,11 @@ const CONFGive = () => {
     const isFormView = giveStatus === "form";
     const isMobileViewport = useIsMobileViewport();
     const {
-        titleMinHeight,
         titleCollapseThreshold,
-        collapsedMinHeight,
         collapsedTopOffset,
     } = getResponsiveTitleMetrics(isMobileViewport);
     const showFullBanner = isFormView && titleHeight > titleCollapseThreshold;
-    const collapsedHeight = Math.max(collapsedMinHeight, titleMinHeight * COLLAPSED_HEIGHT_RATIO, titleHeight * COLLAPSED_HEIGHT_RATIO);
+    const collapsedHeight = getCollapsedTitleHeight(titleHeight, isMobileViewport);
     const effectiveTitleHeight = isFormView ? (showFullBanner ? titleHeight : collapsedHeight) : 124;
     const titleTopOffset = isFormView && !showFullBanner ? collapsedTopOffset : 0;
     const collapsedWrapperMarginBase = isMobileViewport ? 436.75 * 0.5 : 436.75;

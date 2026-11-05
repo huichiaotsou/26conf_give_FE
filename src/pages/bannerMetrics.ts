@@ -25,6 +25,18 @@ export const getResponsiveTitleMetrics = (isMobile: boolean) => {
     };
 };
 
+/** Keeps the compact banner and the space reserved for it in sync. */
+export const getCollapsedTitleHeight = (titleHeight: number, isMobile: boolean) => {
+    const { collapsedMinHeight, titleMinHeight } = getResponsiveTitleMetrics(isMobile);
+    const collapsedHeightRatio = isMobile ? COLLAPSED_HEIGHT_RATIO : COLLAPSED_HEIGHT_RATIO * 0.8;
+
+    return Math.max(
+        collapsedMinHeight,
+        titleMinHeight * collapsedHeightRatio,
+        titleHeight * collapsedHeightRatio,
+    );
+};
+
 export const useIsMobileViewport = () => {
     const [isMobile, setIsMobile] = useState(() => {
         if (typeof window === "undefined") return false;
